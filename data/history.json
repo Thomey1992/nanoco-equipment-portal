@@ -1,0 +1,7 @@
+[
+  {"assetId":"MC001","date":"2026-07-01","type":"Bảo trì / Preventive Maintenance","content":"Kiểm tra tổng thể, vệ sinh, siết chặt, bôi trơn các cơ cấu chuyển động.","status":"Completed","result":"OK"},
+  {"assetId":"MC001","date":"2026-07-05","type":"Sửa chữa / Repair","content":"Xử lý rò khí tại đầu nối xy lanh, kiểm tra lại hoạt động sau sửa chữa.","status":"Completed","result":"OK"},
+  {"assetId":"MC001","date":"2026-07-10","type":"Hiệu chuẩn / Calibration","content":"Kiểm tra thông số thiết bị đo liên quan và xác nhận tình trạng sử dụng.","status":"Completed","result":"Passed"},
+  {"assetId":"MC002","date":"2026-07-03","type":"Bảo trì / Preventive Maintenance","content":"Vệ sinh khu vực đầu laser, kiểm tra quạt làm mát và cảnh báo an toàn.","status":"Completed","result":"OK"},
+  {"assetId":"MC003","date":"2026-07-04","type":"Bảo trì / Maintenance","content":"Kiểm tra xích, bạc đạn, con lăn và độ căng băng tải.","status":"In progress","result":"Monitoring"}
+]

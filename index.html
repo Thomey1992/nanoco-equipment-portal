@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>NANOCO Equipment Portal</title>
+  <link rel="stylesheet" href="css/style.css" />
+</head>
+<body>
+  <header class="hero">
+    <div class="brand">
+      <div class="logo">N</div>
+      <div>
+        <h1>NANOCO EQUIPMENT PORTAL</h1>
+        <p>Tra cứu thông tin thiết bị / Equipment Information</p>
+      </div>
+    </div>
+    <button id="langBtn" class="lang-btn">EN</button>
+  </header>
+
+  <main class="container">
+    <section class="search-card">
+      <h2 data-vi="Tìm kiếm thiết bị" data-en="Search Equipment">Tìm kiếm thiết bị</h2>
+      <input id="searchInput" type="search" placeholder="Nhập mã máy, tên máy, khu vực, model, serial..." />
+      <div class="filters">
+        <select id="areaFilter"><option value="">Tất cả khu vực</option></select>
+        <select id="statusFilter"><option value="">Tất cả trạng thái</option></select>
+      </div>
+    </section>
+
+    <section id="equipmentList" class="grid"></section>
+    <section id="detail" class="detail hidden"></section>
+  </main>
+
+  <footer>
+    <p>© NANOCO - Public equipment information for auditor/customer view.</p>
+  </footer>
+
+  <script src="js/app.js"></script>
+</body>
+</html>

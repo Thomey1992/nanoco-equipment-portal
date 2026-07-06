@@ -1,99 +1,110 @@
 <!doctype html>
 <html lang="vi">
 <head>
-  <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>NANOCO Equipment Management System</title>
-  <link rel="stylesheet" href="css/style.css">
+  <link rel="stylesheet" href="css/style.css" />
 </head>
 <body>
   <header class="topbar">
     <div class="brand">
-      <img src="assets/nanoco-logo.png" alt="NANOCO" class="logo">
+      <img src="assets/nanoco-logo.png" alt="NANOCO" class="logo" />
       <div>
-        <div class="eyebrow" data-i18n="factory">Nhà Máy Biên Hòa - NANOCO</div>
-        <h1 data-i18n="title">NANOCO Equipment Management System</h1>
-        <p data-i18n="subtitle">Tra cứu lý lịch thiết bị, lịch sử sự kiện, PM, hiệu chuẩn và kiểm định.</p>
+        <h1>NANOCO Equipment Management System</h1>
+        <p data-i18n="subtitle">Nhà Máy Biên Hòa - NANOCO / Bien Hoa Factory - NANOCO</p>
       </div>
     </div>
-    <div class="actions">
-      <button id="langBtn" class="btn ghost">EN</button>
-      <button id="refreshBtn" class="btn primary">↻ <span data-i18n="refresh">Cập nhật dữ liệu</span></button>
+    <div class="top-actions">
+      <button id="langBtn" class="ghost">EN</button>
+      <button id="refreshBtn" class="primary">↻ <span data-i18n="refresh">Làm mới</span></button>
     </div>
   </header>
 
-  <main class="layout">
-    <section class="panel dashboard">
-      <div class="panel-title">
-        <div>
-          <h2 data-i18n="dashboard">Dashboard</h2>
-          <p id="lastUpdated" class="muted"></p>
-        </div>
-        <div class="filters">
-          <label><span data-i18n="month">Tháng</span><input type="month" id="monthFilter"></label>
-          <label><span data-i18n="eventFilter">Hoạt động</span><select id="eventFilter"></select></label>
-        </div>
+  <main class="shell">
+    <section class="hero card">
+      <div>
+        <div class="eyebrow" data-i18n="systemLabel">HỆ THỐNG QUẢN LÝ THIẾT BỊ</div>
+        <h2 data-i18n="heroTitle">Dashboard thiết bị, lý lịch và lịch sử máy</h2>
+        <p data-i18n="heroText">Dữ liệu đồng bộ từ 2 sheet: Equipment_Register và Asset_Event_Log1. Người dùng chỉ cần bấm Làm mới để cập nhật.</p>
       </div>
-      <div class="kpis" id="kpiGrid"></div>
-      <div class="dashboard-grid">
-        <div class="card wide">
-          <h3 data-i18n="pmProgress">Tiến độ bảo trì tháng</h3>
-          <div class="progress-line"><span data-i18n="done">Đã thực hiện</span><strong id="pmPercent">0%</strong></div>
-          <div class="progress"><div id="pmBar"></div></div>
-          <div id="pmNote" class="muted small"></div>
-        </div>
-        <div class="card">
-          <h3 data-i18n="monthlyActivities">Hoạt động trong tháng</h3>
-          <div id="activityBars" class="bars"></div>
-        </div>
+      <div class="versionBox">
+        <strong>NEMS</strong>
+        <span>Enterprise V1.0</span>
+      </div>
+    </section>
+
+    <section class="filters card">
+      <div class="field wide">
+        <label data-i18n="searchLabel">Tìm kiếm nhanh</label>
+        <input id="searchInput" placeholder="Nhập tên máy, model, serial, khu vực, hãng, vendor, mã tài sản..." />
+      </div>
+      <div class="field">
+        <label data-i18n="monthLabel">Tháng báo cáo</label>
+        <input id="monthInput" type="month" />
+      </div>
+      <div class="field">
+        <label data-i18n="areaLabel">Khu vực</label>
+        <select id="areaFilter"><option value="">Tất cả khu vực</option></select>
+      </div>
+      <div class="field">
+        <label data-i18n="statusLabel">Trạng thái</label>
+        <select id="statusFilter"><option value="">Tất cả trạng thái</option></select>
+      </div>
+      <div class="field">
+        <label data-i18n="activityLabel">Hoạt động</label>
+        <select id="activityFilter"><option value="">Tất cả hoạt động</option></select>
+      </div>
+    </section>
+
+    <section class="kpis">
+      <div class="kpi card blue"><span data-i18n="totalEq">Tổng thiết bị</span><strong id="kpiTotal">0</strong></div>
+      <div class="kpi card green"><span data-i18n="running">Đang hoạt động</span><strong id="kpiRunning">0</strong></div>
+      <div class="kpi card amber"><span data-i18n="duePm">Đến hạn PM</span><strong id="kpiDuePm">0</strong></div>
+      <div class="kpi card red"><span data-i18n="monthEvents">Sự kiện tháng</span><strong id="kpiEvents">0</strong></div>
+      <div class="kpi card purple"><span data-i18n="breakdown">Đang hư/dừng</span><strong id="kpiBreakdown">0</strong></div>
+      <div class="kpi card orange"><span data-i18n="disposal">Chờ thanh lý</span><strong id="kpiDisposal">0</strong></div>
+    </section>
+
+    <section class="dashboard-grid">
+      <div class="card panel">
+        <div class="panel-head"><h3 data-i18n="monthlyReport">Báo cáo trong tháng</h3><span id="monthBadge"></span></div>
+        <div id="monthBars" class="bars"></div>
+      </div>
+      <div class="card panel">
+        <div class="panel-head"><h3 data-i18n="pmProgress">Tiến độ bảo trì</h3><span id="pmPercent">0%</span></div>
+        <div class="progress"><div id="pmProgressBar"></div></div>
+        <div id="pmSummary" class="summaryBox"></div>
+      </div>
+      <div class="card panel">
+        <div class="panel-head"><h3 data-i18n="upcoming">Sắp tới hạn</h3><span data-i18n="next30">30 ngày tới</span></div>
+        <div class="tabs"><button class="tab active" data-due="pm">PM</button><button class="tab" data-due="calibration" data-i18n="calibration">Hiệu chuẩn</button><button class="tab" data-due="inspection" data-i18n="inspection">Kiểm định</button></div>
+        <div id="dueList" class="mini-list"></div>
+      </div>
+      <div class="card panel">
+        <div class="panel-head"><h3 data-i18n="attention">Tình trạng cần chú ý</h3></div>
+        <div id="attentionList" class="mini-list"></div>
       </div>
     </section>
 
     <section class="content-grid">
-      <aside class="panel search-panel">
-        <h2 data-i18n="searchTitle">Tìm kiếm thiết bị</h2>
-        <input id="searchBox" class="search" placeholder="Tìm tên máy, model, serial, khu vực, hãng, mã tài sản...">
-        <div class="quick-filters">
-          <select id="areaFilter"><option value="" data-i18n="allAreas">Tất cả khu vực</option></select>
-          <select id="statusFilter"><option value="" data-i18n="allStatus">Tất cả trạng thái</option></select>
-        </div>
-        <div class="result-head"><span data-i18n="equipmentList">Danh sách thiết bị</span><b id="resultCount">0</b></div>
+      <aside class="card list-card">
+        <div class="panel-head"><h3 data-i18n="equipmentList">Danh sách thiết bị</h3><span id="listCount">0</span></div>
         <div id="equipmentList" class="equipment-list"></div>
       </aside>
-
-      <section class="panel detail-panel" id="detailPanel">
+      <section class="card detail-card" id="detailCard">
         <div class="empty-state" id="emptyState">
-          <div class="empty-icon">🏭</div>
-          <h2 data-i18n="selectEquipment">Chọn một thiết bị để xem lý lịch và lịch sử</h2>
-          <p data-i18n="selectHint">Có thể tìm bằng tên máy, model, serial, khu vực, hãng hoặc mã tài sản.</p>
+          <h3 data-i18n="selectMachine">Chọn một thiết bị để xem lý lịch 360°</h3>
+          <p data-i18n="selectMachineDesc">Có thể tìm theo tên máy, model, serial, khu vực, hãng hoặc mã tài sản.</p>
         </div>
-        <div id="equipmentDetail" class="hidden"></div>
+        <div id="detailContent" class="hidden"></div>
       </section>
-    </section>
-
-    <section class="panel alerts">
-      <div class="alert-col">
-        <h3>⚠ <span data-i18n="pmDue">Sắp tới hạn bảo trì</span></h3>
-        <div id="pmDueList" class="alert-list"></div>
-      </div>
-      <div class="alert-col">
-        <h3>📏 <span data-i18n="calDue">Sắp tới hạn hiệu chuẩn</span></h3>
-        <div id="calDueList" class="alert-list"></div>
-      </div>
-      <div class="alert-col">
-        <h3>✅ <span data-i18n="insDue">Sắp tới hạn kiểm định</span></h3>
-        <div id="insDueList" class="alert-list"></div>
-      </div>
-      <div class="alert-col">
-        <h3>🚨 <span data-i18n="problemMachines">Máy đang hư / chờ xử lý</span></h3>
-        <div id="problemList" class="alert-list"></div>
-      </div>
     </section>
   </main>
 
-  <footer>
-    <div>NANOCO Equipment Management System · Biên Hòa Factory</div>
-    <div class="credit">Prepared & Developed by <strong>Nguyễn Lĩnh (Thomey)</strong></div>
+  <footer class="footer">
+    <span>© NANOCO - Biên Hòa Factory / Nhà Máy Biên Hòa</span>
+    <strong>Prepared & Developed by Nguyễn Lĩnh (Thomey)</strong>
   </footer>
 
   <script src="js/app.js"></script>

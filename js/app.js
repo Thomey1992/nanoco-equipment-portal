@@ -1,97 +1,28 @@
-let equipment = [];
-let historyData = [];
-let lang = 'vi';
-
-const vi = {
-  allArea:'Tất cả khu vực', allStatus:'Tất cả trạng thái', search:'Nhập mã máy, tên máy, khu vực, model, serial...',
-  back:'← Quay lại danh sách', info:'Thông tin thiết bị', docs:'Tài liệu', history:'Lịch sử thiết bị', noHistory:'Chưa có lịch sử công khai cho thiết bị này.', noResult:'Không tìm thấy thiết bị phù hợp.',
-  operation:'Hướng dẫn vận hành', maintenance:'Hướng dẫn bảo trì', calibration:'Hiệu chuẩn', certificate:'Chứng nhận', video:'Video'
+const I18N={vi:{subtitle:'Tra cứu lý lịch và lịch sử thiết bị',mvpTitle:'Cổng tra cứu thiết bị',mvpDesc:'Tìm kiếm bằng tên máy, model, serial, khu vực, hãng hoặc mã tài sản. Bấm vào thiết bị để xem lý lịch và lịch sử.',loadExcel:'Nạp file Excel',loadDemo:'Dùng dữ liệu mẫu',searchTitle:'Tìm kiếm thiết bị',searchPh:'Nhập tên máy, model, serial, khu vực, hãng...',allAreas:'Tất cả khu vực',allStatus:'Tất cả trạng thái',allTypes:'Tất cả loại thiết bị',resultList:'Danh sách thiết bị',selectMachine:'Chọn một thiết bị',selectMachineDesc:'Thông tin lý lịch và lịch sử sẽ hiển thị tại đây.',total:'Tổng thiết bị',areas:'Khu vực',events:'Sự kiện',showing:'Đang hiển thị',profile:'Lý lịch thiết bị',history:'Lịch sử thiết bị',noHistory:'Chưa có lịch sử cho thiết bị này.',assetId:'Mã tài sản',assetName:'Tên theo mã tài sản',machineName:'Tên máy',category:'Phân loại',model:'Model',serial:'Serial',parameter:'Thông số kỹ thuật',quantity:'Số lượng',manufacturer:'Hãng SX',vendor:'Nhà cung cấp',year:'Năm sản xuất',position:'Vị trí lắp đặt',maintenanceCycle:'Chu kỳ bảo dưỡng',installationDate:'Ngày lắp đặt',accreditation:'Kiểm định',calibration:'Hiệu chuẩn',note:'Ghi chú',status:'Trạng thái',qr:'QR từng máy',sourceDemo:'Dữ liệu mẫu',sourceExcel:'Dữ liệu từ Excel'},en:{subtitle:'Equipment profile and history lookup',mvpTitle:'Equipment Lookup Portal',mvpDesc:'Search by machine name, model, serial, area, manufacturer, vendor, or asset code. Click an item to view profile and history.',loadExcel:'Load Excel file',loadDemo:'Use demo data',searchTitle:'Equipment Search',searchPh:'Enter machine name, model, serial, area, manufacturer...',allAreas:'All areas',allStatus:'All status',allTypes:'All types',resultList:'Equipment List',selectMachine:'Select an equipment',selectMachineDesc:'Profile and history will be displayed here.',total:'Total equipment',areas:'Areas',events:'Events',showing:'Showing',profile:'Equipment Profile',history:'Equipment History',noHistory:'No history for this equipment.',assetId:'Asset ID',assetName:'Asset Name',machineName:'Machine Name',category:'Category',model:'Model',serial:'Serial',parameter:'Technical Parameter',quantity:'Quantity',manufacturer:'Manufacturer',vendor:'Vendor',year:'Year',position:'Position',maintenanceCycle:'Maintenance Cycle',installationDate:'Installation Date',accreditation:'Accreditation',calibration:'Calibration',note:'Note',status:'Status',qr:'Machine QR',sourceDemo:'Demo data',sourceExcel:'Excel data'}};
+let lang='vi',equipment=[],history=[],selected=null;
+const $=s=>document.querySelector(s);
+const norm=v=>(v??'').toString().trim();
+const lower=v=>norm(v).toLowerCase();
+const keyMap={
+ no:['No.','No','STT','Số thứ tự'],category:['Phân loại','Category'],assetId:['Mã tài sản','Asset ID','AssetID','Mã máy'],assetName:['Tên Theo mã tài sản','Tên theo mã tài sản','Asset name'],machineName:['TÊN Name','Tên thiết bị','Tên máy','Machine Name','Name'],model:['MODEL','Model'],serial:['Serial','Số Serial','Số sê ri'],parameter:['THÔNG SỐ KỸ THUẬT Parameter','Thông số kỹ thuật','Parameter'],quantity:['SỐ LƯỢNG Quantity','Số lượng','Quantity'],manufacturer:['HÃNG SX Manufacturer','Hãng SX','Manufacturer'],vendor:['NHÀ CUNG CẤP Vendor','Nhà cung cấp','Vendor'],year:['Năm sản xuất','Year'],position:['VỊ TRÍ LẮP ĐẶT Position','Vị trí lắp đặt','Position','Khu vực','Vị trí khu vực'],maintenanceCycle:['CHU KỲ BẢO DƯỠNG Maintenance cycle','Chu kỳ bảo dưỡng','Maintenance cycle'],installationDate:['NGÀY LẮP ĐẶT Installation date','Ngày lắp đặt','Installation date'],accreditation:['KIỂM ĐỊNH Accreditation','Kiểm định','Accreditation'],calibration:['Hiệu chuẩn Calibration','Hiệu chuẩn','Calibration'],note:['GHI CHÚ Note','Ghi chú','Note'],status:['Trạng thái','Status']
 };
-const en = {
-  allArea:'All areas', allStatus:'All status', search:'Search asset ID, machine name, area, model, serial...',
-  back:'← Back to list', info:'Equipment information', docs:'Documents', history:'Equipment history', noHistory:'No public history for this equipment.', noResult:'No matching equipment found.',
-  operation:'Operation Manual', maintenance:'Maintenance Guide', calibration:'Calibration', certificate:'Certificate', video:'Video'
-};
-const t = () => lang === 'vi' ? vi : en;
-
-async function loadData(){
-  const [eqRes, hisRes] = await Promise.all([fetch('data/equipment.json'), fetch('data/history.json')]);
-  equipment = await eqRes.json();
-  historyData = await hisRes.json();
-  initFilters();
-  applyUrlId();
-  renderList();
-}
-
-function initFilters(){
-  const areas = [...new Set(equipment.map(e=>e.area).filter(Boolean))].sort();
-  const statuses = [...new Set(equipment.map(e=>e.status).filter(Boolean))].sort();
-  areaFilter.innerHTML = `<option value="">${t().allArea}</option>` + areas.map(a=>`<option>${a}</option>`).join('');
-  statusFilter.innerHTML = `<option value="">${t().allStatus}</option>` + statuses.map(s=>`<option>${s}</option>`).join('');
-  searchInput.placeholder = t().search;
-}
-
-function filtered(){
-  const q = searchInput.value.trim().toLowerCase();
-  const area = areaFilter.value;
-  const status = statusFilter.value;
-  return equipment.filter(e=>{
-    const hay = [e.assetId,e.machineName,e.area,e.machineType,e.model,e.serial,e.manufacturer,e.status].join(' ').toLowerCase();
-    return (!q || hay.includes(q)) && (!area || e.area===area) && (!status || e.status===status);
-  });
-}
-
-function renderList(){
-  detail.classList.add('hidden');
-  equipmentList.classList.remove('hidden');
-  const rows = filtered();
-  if(!rows.length){ equipmentList.innerHTML = `<div class="empty">${t().noResult}</div>`; return; }
-  equipmentList.innerHTML = rows.map(e=>`
-    <article class="card" onclick="showDetail('${e.assetId}')">
-      <div class="thumb">${e.photo ? `<img src="${e.photo}" alt="${e.machineName}">` : '<div class="placeholder">🏭</div>'}</div>
-      <h3>${e.machineName}</h3>
-      <div class="meta"><b>${e.assetId}</b> · ${e.area}<br>Model: ${e.model || '-'} · Serial: ${e.serial || '-'}</div>
-      <span class="status ${/stop|ngưng|hỏng|repair/i.test(e.status)?'stop':''}">${e.status || '-'}</span>
-    </article>`).join('');
-}
-
-function showDetail(id){
-  const e = equipment.find(x=>x.assetId===id);
-  if(!e) return;
-  history.pushState(null,'',`?id=${encodeURIComponent(id)}`);
-  equipmentList.classList.add('hidden');
-  detail.classList.remove('hidden');
-  const events = historyData.filter(h=>h.assetId===id).sort((a,b)=>String(b.date).localeCompare(String(a.date)));
-  detail.innerHTML = `
-    <button class="back" onclick="backToList()">${t().back}</button>
-    <div class="detail-head">
-      <div class="detail-img">${e.photo ? `<img src="${e.photo}" alt="${e.machineName}">` : '🏭'}</div>
-      <div>
-        <h2>${e.machineName}</h2>
-        <span class="status ${/stop|ngưng|hỏng|repair/i.test(e.status)?'stop':''}">${e.status || '-'}</span>
-        <h3>${t().info}</h3>
-        <div class="info-grid">
-          ${info('Asset ID',e.assetId)}${info('Area',e.area)}${info('Machine Type',e.machineType)}${info('Model',e.model)}${info('Serial',e.serial)}${info('Manufacturer',e.manufacturer)}${info('Installation Date',e.installationDate)}${info('Remark',e.remark)}
-        </div>
-        <div class="docs">
-          ${doc(e.operationManual,t().operation)}${doc(e.maintenanceGuide,t().maintenance)}${doc(e.calibration,t().calibration,'secondary')}${doc(e.certificate,t().certificate,'secondary')}${doc(e.video,t().video,'secondary')}
-        </div>
-      </div>
-    </div>
-    <div class="history">
-      <h3>${t().history}</h3>
-      <div class="timeline">
-        ${events.length ? events.map(renderEvent).join('') : `<div class="empty">${t().noHistory}</div>`}
-      </div>
-    </div>`;
-  window.scrollTo({top:0,behavior:'smooth'});
-}
-function info(label,value){return `<div class="info"><div class="label">${label}</div><div class="value">${value || '-'}</div></div>`}
-function doc(url,label,cls=''){return url ? `<a class="doc-btn ${cls}" href="${url}" target="_blank" rel="noopener">${label}</a>` : ''}
-function renderEvent(h){return `<div class="event"><div class="event-top"><span class="event-type">${h.type}</span><span>${h.date}</span></div><p>${h.content}</p><small>Status: ${h.status || '-'}${h.result ? ' · Result: '+h.result : ''}</small></div>`}
-function backToList(){ history.pushState(null,'',location.pathname); detail.classList.add('hidden'); equipmentList.classList.remove('hidden'); }
-function applyUrlId(){ const id = new URLSearchParams(location.search).get('id'); if(id) setTimeout(()=>showDetail(id),200); }
-
-searchInput.addEventListener('input',renderList); areaFilter.addEventListener('change',renderList); statusFilter.addEventListener('change',renderList);
-langBtn.addEventListener('click',()=>{ lang = lang==='vi'?'en':'vi'; langBtn.textContent = lang==='vi'?'EN':'VI'; initFilters(); renderList(); });
-loadData().catch(err=>{equipmentList.innerHTML='<div class="empty">Không tải được dữ liệu. Vui lòng kiểm tra file data/equipment.json.</div>'; console.error(err);});
+const histMap={id:['ID','Event ID','No.'],date:['Ngày nhận thông tin','Date','Start time','Completion time','Ngày'],assetId:['Mã tài sản','Asset ID','AssetID'],machineName:['Tên thiết bị','Tên máy','Machine Name','Name'],area:['Vị trí khu vực','Khu vực','Area','Position'],model:['Model','MODEL'],serial:['Số Serial','Serial'],eventType:['Loại trạng thái/sự kiện','Event Type','Type','Action'],content:['Nội dung thông tin (Giờ nhận thông tin, Kênh nhận thông báo, Mô tả lỗi hoặc tình huống)','Nội dung','Description','Content'],reportedBy:['Người báo thông tin cho bạn','Người báo','Reported By'],responsible:['Người phụ trách thực hiện','Người thực hiện','Responsible','Technician'],result:['Kết quả','Result'],cost:['Chi phí','Cost'],downtime:['Downtime (Phút)','Downtime']};
+function t(k){return I18N[lang][k]||k} function applyI18n(){document.querySelectorAll('[data-i18n]').forEach(e=>e.textContent=t(e.dataset.i18n));document.querySelectorAll('[data-i18n-placeholder]').forEach(e=>e.placeholder=t(e.dataset.i18nPlaceholder));$('#btnLang').textContent=lang==='vi'?'EN':'VI';$('#sourceLabel').textContent=$('#sourceLabel').dataset.source==='excel'?t('sourceExcel'):t('sourceDemo');renderAll();}
+function val(row,map,key){const names=map[key]||[key];for(const n of names){if(row[n]!=null&&row[n]!=='' )return norm(row[n]);}return ''}
+function normalizeEquip(rows){return rows.map((r,i)=>{let o={};Object.keys(keyMap).forEach(k=>o[k]=val(r,keyMap,k)); if(!o.no)o.no=String(i+1); if(!o.status)o.status='Đang hoạt động'; return o;}).filter(x=>Object.values(x).some(Boolean));}
+function normalizeHist(rows){return rows.map((r,i)=>{let o={};Object.keys(histMap).forEach(k=>o[k]=val(r,histMap,k)); if(!o.id)o.id=String(i+1); return o;}).filter(x=>Object.values(x).some(Boolean));}
+async function loadDemo(){const [e,h]=await Promise.all([fetch('data/equipment.json').then(r=>r.json()),fetch('data/history.json').then(r=>r.json())]);equipment=e;history=h;$('#sourceLabel').dataset.source='demo';selected=null;applyI18n();}
+function bestSheet(wb,names){for(const n of names){const hit=wb.SheetNames.find(s=>lower(s)===lower(n));if(hit)return hit;} return wb.SheetNames[0];}
+function rowsFromSheet(ws){return XLSX.utils.sheet_to_json(ws,{defval:'',raw:false});}
+$('#excelFile').addEventListener('change',async e=>{const f=e.target.files[0]; if(!f)return; const buf=await f.arrayBuffer(); const wb=XLSX.read(buf,{type:'array'}); const es=bestSheet(wb,['Equipment_Register','Equipment Register','Equipment_Master']); const hs=bestSheet(wb,['Asset_Event_Log','Asset_Event_Log1','Asset Event Log']); equipment=normalizeEquip(rowsFromSheet(wb.Sheets[es])); history=normalizeHist(rowsFromSheet(wb.Sheets[hs])); $('#sourceLabel').dataset.source='excel'; selected=null; applyI18n();});
+$('#btnDemo').onclick=loadDemo; $('#btnLang').onclick=()=>{lang=lang==='vi'?'en':'vi';applyI18n()}; ['searchInput','areaFilter','statusFilter','typeFilter'].forEach(id=>$('#'+id).addEventListener('input',renderAll));
+function searchable(o){return Object.values(o).join(' ').toLowerCase()}
+function matchHistory(eq,ev){const keys=[eq.assetId,eq.machineName,eq.model,eq.serial].map(lower).filter(Boolean); const s=searchable(ev); return keys.some(k=>s.includes(k));}
+function filtered(){const q=lower($('#searchInput').value),a=$('#areaFilter').value,st=$('#statusFilter').value,tp=$('#typeFilter').value;return equipment.filter(e=>(!q||searchable(e).includes(q))&&(!a||e.position===a)&&(!st||e.status===st)&&(!tp||e.category===tp));}
+function fillFilters(){const fill=(id,vals,allKey)=>{const el=$('#'+id),cur=el.value;el.innerHTML=`<option value="">${t(allKey)}</option>`;[...new Set(vals.filter(Boolean))].sort().forEach(v=>{const o=document.createElement('option');o.value=v;o.textContent=v;el.appendChild(o)});el.value=cur};fill('areaFilter',equipment.map(e=>e.position),'allAreas');fill('statusFilter',equipment.map(e=>e.status),'allStatus');fill('typeFilter',equipment.map(e=>e.category),'allTypes');}
+function renderStats(list){const areas=new Set(equipment.map(e=>e.position).filter(Boolean)).size; $('#stats').innerHTML=`<div class="stat"><b>${equipment.length}</b><span>${t('total')}</span></div><div class="stat"><b>${areas}</b><span>${t('areas')}</span></div><div class="stat"><b>${history.length}</b><span>${t('events')}</span></div><div class="stat"><b>${list.length}</b><span>${t('showing')}</span></div>`}
+function renderList(list){$('#countText').textContent=`${list.length}`; const box=$('#equipmentList');box.innerHTML='';list.forEach((e,idx)=>{const tpl=$('#cardTpl').content.cloneNode(true);const btn=tpl.querySelector('button');btn.classList.toggle('active',selected&&selected.no===e.no&&selected.machineName===e.machineName);tpl.querySelector('h3').textContent=e.machineName||e.assetName||`Equipment ${idx+1}`;tpl.querySelector('.status').textContent=e.status||'';tpl.querySelector('.meta').textContent=[e.assetId,e.model,e.serial].filter(Boolean).join(' · ')||e.parameter||'';tpl.querySelector('.small').textContent=[e.position,e.manufacturer,e.vendor].filter(Boolean).join(' · ');btn.onclick=()=>{selected=e;renderAll();document.getElementById('detailPanel').scrollIntoView({behavior:'smooth',block:'start'})};box.appendChild(tpl)});}
+function info(label,val){return `<div class="infoBox"><label>${label}</label><b>${val||'-'}</b></div>`}
+function renderDetail(){const p=$('#detailPanel'); if(!selected){p.innerHTML=`<div class="empty"><h3>${t('selectMachine')}</h3><p>${t('selectMachineDesc')}</p></div>`;return} const evs=history.filter(h=>matchHistory(selected,h)).sort((a,b)=>lower(b.date).localeCompare(lower(a.date))); const url=`${location.origin}${location.pathname}?q=${encodeURIComponent(selected.assetId||selected.machineName||'')}`; p.innerHTML=`<div class="detailHead"><div><h2>${selected.machineName||selected.assetName||'Equipment'}</h2><div class="subTitle">${[selected.assetId,selected.model,selected.serial,selected.position].filter(Boolean).join(' · ')}</div></div><div class="qr"><b>${t('qr')}</b><br>${url}</div></div><h3 class="sectionTitle">${t('profile')}</h3><div class="gridInfo">${info(t('assetId'),selected.assetId)}${info(t('assetName'),selected.assetName)}${info(t('category'),selected.category)}${info(t('model'),selected.model)}${info(t('serial'),selected.serial)}${info(t('parameter'),selected.parameter)}${info(t('quantity'),selected.quantity)}${info(t('manufacturer'),selected.manufacturer)}${info(t('vendor'),selected.vendor)}${info(t('year'),selected.year)}${info(t('position'),selected.position)}${info(t('maintenanceCycle'),selected.maintenanceCycle)}${info(t('installationDate'),selected.installationDate)}${info(t('accreditation'),selected.accreditation)}${info(t('calibration'),selected.calibration)}${info(t('status'),selected.status)}${info(t('note'),selected.note)}</div><h3 class="sectionTitle">${t('history')}</h3><div class="timeline">${evs.length?evs.map(ev=>`<div class="event"><div class="eventTop"><span class="eventType">${ev.eventType||'-'}</span><span class="eventDate">${ev.date||''}</span></div><p>${ev.content||''}</p><div class="eventMeta"><span>${ev.responsible||''}</span><span>${ev.result||''}</span><span>${ev.downtime?ev.downtime+' min':''}</span><span>${ev.cost?ev.cost:''}</span></div></div>`).join(''):`<div class="empty"><p>${t('noHistory')}</p></div>`}</div>`}
+function renderAll(){fillFilters();const list=filtered();renderStats(list);renderList(list);renderDetail();}
+(async function init(){await loadDemo(); const params=new URLSearchParams(location.search); const q=params.get('q')||params.get('id'); if(q){$('#searchInput').value=q; const list=filtered(); if(list[0])selected=list[0]; renderAll();}})();

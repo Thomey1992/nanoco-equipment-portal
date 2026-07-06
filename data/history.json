@@ -1,7 +1,5 @@
 [
-  {"assetId":"MC001","date":"2026-07-01","type":"Bảo trì / Preventive Maintenance","content":"Kiểm tra tổng thể, vệ sinh, siết chặt, bôi trơn các cơ cấu chuyển động.","status":"Completed","result":"OK"},
-  {"assetId":"MC001","date":"2026-07-05","type":"Sửa chữa / Repair","content":"Xử lý rò khí tại đầu nối xy lanh, kiểm tra lại hoạt động sau sửa chữa.","status":"Completed","result":"OK"},
-  {"assetId":"MC001","date":"2026-07-10","type":"Hiệu chuẩn / Calibration","content":"Kiểm tra thông số thiết bị đo liên quan và xác nhận tình trạng sử dụng.","status":"Completed","result":"Passed"},
-  {"assetId":"MC002","date":"2026-07-03","type":"Bảo trì / Preventive Maintenance","content":"Vệ sinh khu vực đầu laser, kiểm tra quạt làm mát và cảnh báo an toàn.","status":"Completed","result":"OK"},
-  {"assetId":"MC003","date":"2026-07-04","type":"Bảo trì / Maintenance","content":"Kiểm tra xích, bạc đạn, con lăn và độ căng băng tải.","status":"In progress","result":"Monitoring"}
+  {"id":"1","date":"2026-07-06","assetId":"","machineName":"Băng tải lắp ráp 1 / Conveyor assembly 1","area":"Khu vực lắp ráp - Assembly area","model":"","serial":"","eventType":"PM","content":"Kiểm tra tổng thể, vệ sinh và xác nhận tình trạng hoạt động.","reportedBy":"Kỹ thuật","responsible":"Kỹ thuật","result":"Hoàn thành","cost":"","downtime":""},
+  {"id":"2","date":"2026-07-06","assetId":"","machineName":"Máy chấm keo gắn chụp bulb 1 / Gluing and attached BULB cover machine 1","area":"Khu vực lắp ráp - Assembly area","model":"DG100","serial":"","eventType":"Repair","content":"Kiểm tra tình trạng keo, vệ sinh đầu phun và chạy thử.","reportedBy":"Sản xuất","responsible":"Kỹ thuật","result":"Hoàn thành","cost":"","downtime":""},
+  {"id":"3","date":"2026-07-06","assetId":"","machineName":"Máy dán thùng 1 / Carton sealing machine 1","area":"Khu vực lắp ráp - Assembly area","model":"FXJ6050","serial":"","eventType":"Inspection","content":"Kiểm tra băng tải, dây curoa và motor kéo.","reportedBy":"Kỹ thuật","responsible":"Kỹ thuật","result":"Đạt","cost":"","downtime":""}
 ]

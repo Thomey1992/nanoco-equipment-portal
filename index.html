@@ -1,40 +1,81 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="vi">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>NANOCO Equipment Portal</title>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>NANOCO Equipment Portal V4</title>
   <link rel="stylesheet" href="css/style.css" />
+  <script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
 </head>
 <body>
-  <header class="hero">
+  <header class="topbar">
     <div class="brand">
       <div class="logo">N</div>
       <div>
         <h1>NANOCO EQUIPMENT PORTAL</h1>
-        <p>Tra cứu thông tin thiết bị / Equipment Information</p>
+        <p data-i18n="subtitle">Tra cứu lý lịch và lịch sử thiết bị</p>
       </div>
     </div>
-    <button id="langBtn" class="lang-btn">EN</button>
+    <div class="actions">
+      <button id="btnLang" class="ghost">EN</button>
+    </div>
   </header>
 
-  <main class="container">
-    <section class="search-card">
-      <h2 data-vi="Tìm kiếm thiết bị" data-en="Search Equipment">Tìm kiếm thiết bị</h2>
-      <input id="searchInput" type="search" placeholder="Nhập mã máy, tên máy, khu vực, model, serial..." />
-      <div class="filters">
-        <select id="areaFilter"><option value="">Tất cả khu vực</option></select>
-        <select id="statusFilter"><option value="">Tất cả trạng thái</option></select>
+  <main class="shell">
+    <section class="panel intro">
+      <div>
+        <h2 data-i18n="mvpTitle">Cổng tra cứu thiết bị</h2>
+        <p data-i18n="mvpDesc">Tìm kiếm bằng tên máy, model, serial, khu vực, hãng hoặc mã tài sản. Bấm vào thiết bị để xem lý lịch và lịch sử.</p>
+      </div>
+      <div class="uploadBox">
+        <label for="excelFile" class="uploadBtn" data-i18n="loadExcel">Nạp file Excel</label>
+        <input id="excelFile" type="file" accept=".xlsx,.xls,.csv" hidden />
+        <button id="btnDemo" class="light" data-i18n="loadDemo">Dùng dữ liệu mẫu</button>
       </div>
     </section>
 
-    <section id="equipmentList" class="grid"></section>
-    <section id="detail" class="detail hidden"></section>
+    <section class="stats" id="stats"></section>
+
+    <section class="panel searchPanel">
+      <div class="searchTop">
+        <h2 data-i18n="searchTitle">Tìm kiếm thiết bị</h2>
+        <span id="sourceLabel" class="badge muted">Demo data</span>
+      </div>
+      <input id="searchInput" class="search" data-i18n-placeholder="searchPh" placeholder="Nhập tên máy, model, serial, khu vực, hãng..." />
+      <div class="filters">
+        <select id="areaFilter"><option value="" data-i18n="allAreas">Tất cả khu vực</option></select>
+        <select id="statusFilter"><option value="" data-i18n="allStatus">Tất cả trạng thái</option></select>
+        <select id="typeFilter"><option value="" data-i18n="allTypes">Tất cả loại thiết bị</option></select>
+      </div>
+    </section>
+
+    <section class="layout">
+      <aside class="listPanel panel">
+        <div class="listHeader"><strong data-i18n="resultList">Danh sách thiết bị</strong><span id="countText"></span></div>
+        <div id="equipmentList" class="equipmentList"></div>
+      </aside>
+
+      <section class="detailPanel panel" id="detailPanel">
+        <div class="empty">
+          <h3 data-i18n="selectMachine">Chọn một thiết bị</h3>
+          <p data-i18n="selectMachineDesc">Thông tin lý lịch và lịch sử sẽ hiển thị tại đây.</p>
+        </div>
+      </section>
+    </section>
+
+    <footer>
+      <span>Prepared by Nguyễn Lĩnh</span>
+      <span>Engineering Technology Department · NANOCO</span>
+    </footer>
   </main>
 
-  <footer>
-    <p>© NANOCO - Public equipment information for auditor/customer view.</p>
-  </footer>
+  <template id="cardTpl">
+    <button class="machineCard">
+      <div class="cardTop"><h3></h3><span class="status"></span></div>
+      <div class="meta"></div>
+      <div class="small"></div>
+    </button>
+  </template>
 
   <script src="js/app.js"></script>
 </body>

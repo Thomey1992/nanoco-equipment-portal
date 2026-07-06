@@ -3,105 +3,95 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>NEMS Enterprise V2</title>
+  <title>NEMS Maintenance Ready</title>
   <link rel="stylesheet" href="css/style.css" />
 </head>
 <body>
   <header class="topbar">
     <div class="brand">
-      <div class="logo-mark">N</div>
+      <div class="brand-logo">N</div>
       <div>
-        <h1>NEMS Enterprise V2</h1>
-        <p>Nanoco Equipment Management System</p>
+        <h1>NEMS Maintenance Ready</h1>
+        <p>Lý lịch thiết bị · Lịch sử thiết bị · Bảo trì</p>
       </div>
     </div>
     <div class="top-actions">
-      <button id="exportCsvBtn" class="secondary">Xuất CSV</button>
-      <button id="refreshBtn" class="primary">Tải lại dữ liệu</button>
+      <button id="exportCsvBtn" class="btn secondary">Xuất CSV</button>
+      <button id="reloadBtn" class="btn primary">Tải lại dữ liệu</button>
     </div>
   </header>
 
   <main class="page">
     <section class="hero panel">
       <div>
-        <p class="eyebrow">Enterprise Maintenance Control</p>
-        <h2>Quản lý thiết bị, bảo trì, sự cố và phụ tùng trên một màn hình</h2>
-        <p class="hero-text">Bản V2 chạy bằng GitHub Pages, dữ liệu nằm trong thư mục <strong>data/*.json</strong>. Có thể mở rộng lên nhiều xưởng, nhiều line và nhiều thiết bị.</p>
+        <p class="eyebrow">NANOCO EQUIPMENT MANAGEMENT SYSTEM</p>
+        <h2>Quản lý thiết bị để nhập và áp dụng ngay</h2>
+        <p class="hero-text">Dữ liệu nằm trong thư mục <strong>data/*.json</strong>. Sáng mai bạn chỉ cần nhập thêm thiết bị, sự kiện và lịch bảo trì vào các file JSON này.</p>
       </div>
-      <div class="hero-meta">
-        <span>Dữ liệu bắt đầu từ 01/07/2026</span>
-        <strong id="lastUpdated">-</strong>
+      <div class="data-note">
+        <span>Dữ liệu bắt đầu từ</span>
+        <strong>01/07/2026</strong>
+        <small>Dữ liệu trước ngày này xem hồ sơ giấy hoặc cập nhật bổ sung.</small>
       </div>
     </section>
 
-    <section class="dashboard">
+    <section class="stats-grid">
       <div class="stat-card"><span>Tổng thiết bị</span><strong id="totalEquipment">0</strong></div>
       <div class="stat-card"><span>Đang sử dụng</span><strong id="runningEquipment">0</strong></div>
       <div class="stat-card"><span>Chờ sửa chữa</span><strong id="repairEquipment">0</strong></div>
-      <div class="stat-card"><span>Ngừng sử dụng</span><strong id="stoppedEquipment">0</strong></div>
-      <div class="stat-card"><span>Số lần sự cố</span><strong id="totalBreakdowns">0</strong></div>
+      <div class="stat-card"><span>Lịch PM đến hạn</span><strong id="duePmCount">0</strong></div>
+      <div class="stat-card"><span>Sự kiện thiết bị</span><strong id="totalEvents">0</strong></div>
       <div class="stat-card"><span>Tổng downtime</span><strong id="totalDowntime">0 phút</strong></div>
-      <div class="stat-card"><span>MTTR trung bình</span><strong id="mttrValue">0 phút</strong></div>
-      <div class="stat-card"><span>Phụ tùng cảnh báo</span><strong id="lowStockCount">0</strong></div>
     </section>
 
     <section class="filters panel">
-      <input id="searchInput" type="search" placeholder="Tìm theo mã, tên máy, model, serial, khu vực..." />
+      <input id="searchInput" type="search" placeholder="Tìm mã, tên máy, model, serial, khu vực..." />
       <select id="areaFilter"><option value="">Tất cả khu vực</option></select>
       <select id="lineFilter"><option value="">Tất cả line</option></select>
       <select id="statusFilter"><option value="">Tất cả trạng thái</option></select>
       <select id="criticalFilter"><option value="">Tất cả mức quan trọng</option></select>
     </section>
 
-    <section class="layout">
+    <section class="main-layout">
       <aside class="panel equipment-panel">
         <div class="section-title">
-          <h2>Danh mục thiết bị</h2>
-          <p>Equipment Register</p>
+          <div><h2>Danh mục thiết bị</h2><p>Equipment Register</p></div>
+          <span id="filteredCount" class="count-pill">0</span>
         </div>
         <div id="equipmentList" class="equipment-list"></div>
       </aside>
 
-      <section class="content">
-        <div class="panel">
-          <div class="section-title"><h2>Hồ sơ thiết bị</h2><p>Equipment 360° Profile</p></div>
-          <div id="equipmentDetail"></div>
-        </div>
+      <section class="content-stack">
+        <section class="panel">
+          <div class="section-title">
+            <div><h2>Lý lịch thiết bị</h2><p>Equipment Profile / Equipment History Card</p></div>
+            <span id="profileStatus" class="badge">-</span>
+          </div>
+          <div id="equipmentProfile" class="profile-empty">Chọn một thiết bị để xem lý lịch.</div>
+        </section>
 
-        <div class="panel tabs-panel">
+        <section class="panel tabs-panel">
           <div class="tabs">
-            <button class="tab active" data-tab="maintenance">Bảo trì</button>
-            <button class="tab" data-tab="breakdown">Sự cố</button>
-            <button class="tab" data-tab="sparepart">Phụ tùng</button>
-            <button class="tab" data-tab="schedule">Lịch PM</button>
-            <button class="tab" data-tab="eventlog">Event Log</button>
+            <button class="tab-btn active" data-tab="eventLogTab">Lịch sử thiết bị</button>
+            <button class="tab-btn" data-tab="maintenanceTab">Bảo trì</button>
+            <button class="tab-btn" data-tab="pmPlanTab">Lịch PM</button>
           </div>
 
-          <div class="tab-page active" id="tab-maintenance">
-            <div class="section-title"><h2>Lịch sử bảo trì</h2><p>Preventive Maintenance History</p></div>
-            <div class="table-wrap"><table><thead><tr><th>Ngày</th><th>Mã TB</th><th>Loại</th><th>Nội dung</th><th>Người TH</th><th>Kết quả</th></tr></thead><tbody id="maintenanceTableBody"></tbody></table></div>
+          <div id="eventLogTab" class="tab-content active">
+            <div class="section-title compact"><div><h2>Asset Event Log</h2><p>Mọi sự kiện trong vòng đời thiết bị</p></div></div>
+            <div class="table-wrap"><table><thead><tr><th>Ngày</th><th>Loại sự kiện</th><th>Nội dung</th><th>Nguyên nhân</th><th>Hành động</th><th>Người thực hiện</th><th>Downtime</th><th>Trạng thái</th></tr></thead><tbody id="eventLogBody"></tbody></table></div>
           </div>
 
-          <div class="tab-page" id="tab-breakdown">
-            <div class="section-title"><h2>Lịch sử sự cố</h2><p>Breakdown / Repair History</p></div>
-            <div class="table-wrap"><table><thead><tr><th>Ngày</th><th>Mã TB</th><th>Sự cố</th><th>Nguyên nhân</th><th>Hành động</th><th>Downtime</th><th>Trạng thái</th></tr></thead><tbody id="breakdownTableBody"></tbody></table></div>
+          <div id="maintenanceTab" class="tab-content">
+            <div class="section-title compact"><div><h2>Lịch sử bảo trì</h2><p>Preventive / Corrective Maintenance</p></div></div>
+            <div class="table-wrap"><table><thead><tr><th>Ngày</th><th>Hạng mục</th><th>Nội dung</th><th>Kết quả</th><th>Người thực hiện</th><th>Ghi chú</th></tr></thead><tbody id="maintenanceBody"></tbody></table></div>
           </div>
 
-          <div class="tab-page" id="tab-sparepart">
-            <div class="section-title"><h2>Phụ tùng liên quan</h2><p>Spare Parts</p></div>
-            <div class="table-wrap"><table><thead><tr><th>Mã PT</th><th>Tên phụ tùng</th><th>Thông số</th><th>Mã TB</th><th>Tồn kho</th><th>Tồn min</th><th>ĐVT</th><th>Tình trạng</th></tr></thead><tbody id="sparepartTableBody"></tbody></table></div>
+          <div id="pmPlanTab" class="tab-content">
+            <div class="section-title compact"><div><h2>Lịch bảo trì định kỳ</h2><p>PM Schedule</p></div></div>
+            <div class="table-wrap"><table><thead><tr><th>Hạng mục</th><th>Tần suất</th><th>Ngày gần nhất</th><th>Ngày kế tiếp</th><th>Trạng thái</th><th>Người phụ trách</th><th>Ghi chú</th></tr></thead><tbody id="pmPlanBody"></tbody></table></div>
           </div>
-
-          <div class="tab-page" id="tab-schedule">
-            <div class="section-title"><h2>Lịch bảo trì định kỳ</h2><p>PM Schedule</p></div>
-            <div class="table-wrap"><table><thead><tr><th>Mã TB</th><th>Hạng mục</th><th>Tần suất</th><th>Ngày gần nhất</th><th>Ngày kế tiếp</th><th>Phụ trách</th><th>Trạng thái</th></tr></thead><tbody id="scheduleTableBody"></tbody></table></div>
-          </div>
-
-          <div class="tab-page" id="tab-eventlog">
-            <div class="section-title"><h2>Nhật ký vòng đời thiết bị</h2><p>Asset Event Log</p></div>
-            <div id="eventLog" class="timeline"></div>
-          </div>
-        </div>
+        </section>
       </section>
     </section>
   </main>

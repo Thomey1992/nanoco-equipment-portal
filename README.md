@@ -1,47 +1,24 @@
-# NEMS Enterprise V2
+# NEMS Maintenance Ready
 
-Nanoco Equipment Management System - static version for GitHub Pages.
+Bản tập trung để áp dụng ngay cho:
 
-## Cấu trúc
+- Lý lịch thiết bị
+- Lịch sử thiết bị / Asset Event Log
+- Bảo trì định kỳ / PM
 
-```text
-NEMS-Enterprise-V2/
-├── index.html
-├── css/style.css
-├── js/app.js
-├── data/equipment.json
-├── data/maintenance.json
-├── data/breakdowns.json
-├── data/spareparts.json
-├── data/pm_schedule.json
-├── data/users.json
-└── assets/
-```
+## Cách cập nhật dữ liệu
 
-## Cách chạy nhanh
+Sửa các file trong thư mục `data`:
 
-1. Copy toàn bộ thư mục lên repository GitHub.
-2. Bật GitHub Pages từ branch `main`.
-3. Mở link GitHub Pages.
+- `equipment.json`: danh mục và lý lịch thiết bị
+- `events.json`: toàn bộ lịch sử thiết bị, sự cố, sửa chữa, điều chuyển, kiểm định...
+- `maintenance.json`: các lần bảo trì đã thực hiện
+- `pm_schedule.json`: lịch bảo trì định kỳ
 
-## Cách sửa dữ liệu
+## Chạy trên GitHub Pages
 
-Chỉ cần sửa các file trong thư mục `data/`:
+Upload toàn bộ nội dung thư mục này lên repository GitHub Pages, nhánh `main`, thư mục `/root`.
 
-- `equipment.json`: danh mục thiết bị.
-- `maintenance.json`: lịch sử bảo trì.
-- `breakdowns.json`: lịch sử sự cố.
-- `spareparts.json`: phụ tùng.
-- `pm_schedule.json`: lịch bảo trì định kỳ.
-- `users.json`: người phụ trách.
+## Ghi chú dữ liệu
 
-## Nguyên tắc dữ liệu
-
-- Mỗi thiết bị có mã duy nhất dạng `EQ-0001`.
-- Các bảng khác liên kết với thiết bị bằng trường `equipmentId`.
-- Không dùng backend, không dùng database, không dùng macro.
-- Có thể mở rộng sau này sang Excel import/export hoặc SharePoint.
-
-## Phiên bản
-
-Milestone 2 - Enterprise static architecture.
+Dữ liệu bắt đầu từ ngày 01/07/2026. Dữ liệu trước ngày này xem hồ sơ giấy hoặc cập nhật bổ sung.

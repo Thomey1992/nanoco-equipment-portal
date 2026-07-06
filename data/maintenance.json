@@ -1,7 +1,7 @@
 [
-  {"equipmentId":"EQ-0001","date":"2026-07-01","type":"Weekly PM","description":"Vệ sinh nozzle, kiểm tra feeder, kiểm tra origin và quạt head.","user":"Khang","result":"Hoàn thành"},
-  {"equipmentId":"EQ-0001","date":"2026-07-04","type":"Inspection","description":"Theo dõi head 8 sau khi đổi cáp 7↔8.","user":"Khang","result":"Theo dõi tiếp"},
-  {"equipmentId":"EQ-0002","date":"2026-07-02","type":"Weekly PM","description":"Vệ sinh buồng nhiệt, kiểm tra conveyor chain và nhiệt độ zone.","user":"Khang","result":"Hoàn thành"},
-  {"equipmentId":"EQ-0004","date":"2026-07-03","type":"Lubrication","description":"Bôi trơn xích truyền động, kiểm tra độ căng và bạc đạn.","user":"Hòa","result":"Hoàn thành"},
-  {"equipmentId":"EQ-0005","date":"2026-07-05","type":"Calibration Check","description":"Kiểm tra sai số thiết bị test công suất bằng mẫu chuẩn.","user":"Khang","result":"Hoàn thành"}
+  {"equipmentId":"EQ-0001","date":"2026-07-03","item":"Vệ sinh","content":"Vệ sinh bề mặt máy, camera, khu vực nozzle và feeder","result":"Đạt","user":"Khang","note":"Không bụi bất thường."},
+  {"equipmentId":"EQ-0001","date":"2026-07-03","item":"Kiểm tra","content":"Kiểm tra head, nozzle, feeder base, tín hiệu lỗi","result":"Theo dõi","user":"Khang","note":"Theo dõi head 8."},
+  {"equipmentId":"EQ-0002","date":"2026-07-02","item":"Kiểm tra nhiệt","content":"Kiểm tra nhiệt zone, quạt, băng tải và hút khói","result":"Đạt","user":"Khang","note":"Nhiệt ổn định."},
+  {"equipmentId":"EQ-0004","date":"2026-07-02","item":"Siết chặt","content":"Kiểm tra bulong chân máy, motor, tăng đưa băng tải","result":"Đạt","user":"Hòa","note":"Đã căn chỉnh belt."},
+  {"equipmentId":"EQ-0006","date":"2026-07-01","item":"Xả nước","content":"Xả nước bình tích, kiểm tra rò rỉ khí và mức dầu","result":"Đạt","user":"Hòa","note":"Không rò rỉ."}
 ]

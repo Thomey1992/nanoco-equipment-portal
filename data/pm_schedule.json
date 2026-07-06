@@ -1,7 +1,8 @@
 [
-  {"equipmentId":"EQ-0001","item":"Vệ sinh nozzle, feeder, camera, kiểm tra quạt head","frequency":"Weekly","lastDate":"2026-07-01","nextDate":"2026-07-08","owner":"Khang","status":"Sắp đến hạn"},
-  {"equipmentId":"EQ-0002","item":"Kiểm tra nhiệt độ zone, conveyor chain, quạt làm mát","frequency":"Weekly","lastDate":"2026-07-02","nextDate":"2026-07-09","owner":"Khang","status":"Đúng hạn"},
-  {"equipmentId":"EQ-0003","item":"Kiểm tra đầu hàn, dây tín hiệu, nguồn ultrasonic","frequency":"Monthly","lastDate":"2026-06-20","nextDate":"2026-07-20","owner":"Hòa","status":"Đúng hạn"},
-  {"equipmentId":"EQ-0004","item":"Vệ sinh, bôi trơn xích, kiểm tra bạc đạn và motor","frequency":"Weekly","lastDate":"2026-07-03","nextDate":"2026-07-10","owner":"Hòa","status":"Đúng hạn"},
-  {"equipmentId":"EQ-0005","item":"Kiểm tra sai số đo công suất, dòng, áp, PF","frequency":"Monthly","lastDate":"2026-07-05","nextDate":"2026-08-05","owner":"Khang","status":"Đúng hạn"}
+  {"equipmentId":"EQ-0001","item":"Vệ sinh nozzle và camera","frequency":"Hàng tuần","lastDate":"2026-07-03","nextDate":"2026-07-10","owner":"Khang","note":"Thực hiện khi line dừng."},
+  {"equipmentId":"EQ-0001","item":"Kiểm tra feeder base và head","frequency":"Hàng tuần","lastDate":"2026-07-03","nextDate":"2026-07-10","owner":"Khang","note":"Ưu tiên head 8."},
+  {"equipmentId":"EQ-0002","item":"Kiểm tra nhiệt reflow","frequency":"Hàng tuần","lastDate":"2026-07-02","nextDate":"2026-07-09","owner":"Khang","note":"Ghi nhận nhiệt độ zone."},
+  {"equipmentId":"EQ-0003","item":"Kiểm tra đầu hàn siêu âm","frequency":"Hàng tuần","lastDate":"2026-06-27","nextDate":"2026-07-04","owner":"Hòa","note":"Đang chờ sửa chữa."},
+  {"equipmentId":"EQ-0004","item":"Kiểm tra motor, belt, con lăn","frequency":"Hàng tuần","lastDate":"2026-07-02","nextDate":"2026-07-09","owner":"Hòa","note":"Theo dõi lệch belt."},
+  {"equipmentId":"EQ-0006","item":"Xả nước và kiểm tra dầu máy nén khí","frequency":"Hàng ngày","lastDate":"2026-07-06","nextDate":"2026-07-07","owner":"Hòa","note":"Ghi vào sổ trực ca."}
 ]

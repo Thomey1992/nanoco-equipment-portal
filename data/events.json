@@ -1,0 +1,6 @@
+[
+  {"equipmentId":"EQ-0001","date":"2026-07-01","type":"Sự cố","title":"Head 8 fan abnormal","cause":"Quạt head 8 hoạt động bất thường","action":"Đổi cáp head 7 và 8, disable head 8, re-origin máy","user":"Khang","downtimeMinutes":45,"status":"Đã xử lý","note":"Theo dõi 1 tháng rồi đánh giá lại."},
+  {"equipmentId":"EQ-0001","date":"2026-07-03","type":"Bảo trì","title":"Vệ sinh và kiểm tra mounter","cause":"Bảo trì định kỳ","action":"Vệ sinh nozzle, kiểm tra camera, kiểm tra feeder base","user":"Khang","downtimeMinutes":0,"status":"Hoàn thành","note":"Không phát hiện bất thường mới."},
+  {"equipmentId":"EQ-0003","date":"2026-07-04","type":"Sửa chữa","title":"Máy hàn siêu âm không ổn định","cause":"Nghi dây tín hiệu hoặc relay","action":"Chờ kiểm tra dây, relay, đầu hàn","user":"Hòa","downtimeMinutes":120,"status":"Đang xử lý","note":"Ưu tiên xử lý trong ngày."},
+  {"equipmentId":"EQ-0004","date":"2026-07-02","type":"Kiểm tra","title":"Băng tải chạy lệch nhẹ","cause":"Dây belt lệch tâm","action":"Căn chỉnh tăng đưa và vệ sinh con lăn","user":"Hòa","downtimeMinutes":15,"status":"Hoàn thành","note":"Theo dõi lại sau 1 tuần."}
+]

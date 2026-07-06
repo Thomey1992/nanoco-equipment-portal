@@ -1,5 +1,53 @@
 [
-  {"id":"1","date":"2026-07-06","assetId":"","machineName":"Băng tải lắp ráp 1 / Conveyor assembly 1","area":"Khu vực lắp ráp - Assembly area","model":"","serial":"","eventType":"PM","content":"Kiểm tra tổng thể, vệ sinh và xác nhận tình trạng hoạt động.","reportedBy":"Kỹ thuật","responsible":"Kỹ thuật","result":"Hoàn thành","cost":"","downtime":""},
-  {"id":"2","date":"2026-07-06","assetId":"","machineName":"Máy chấm keo gắn chụp bulb 1 / Gluing and attached BULB cover machine 1","area":"Khu vực lắp ráp - Assembly area","model":"DG100","serial":"","eventType":"Repair","content":"Kiểm tra tình trạng keo, vệ sinh đầu phun và chạy thử.","reportedBy":"Sản xuất","responsible":"Kỹ thuật","result":"Hoàn thành","cost":"","downtime":""},
-  {"id":"3","date":"2026-07-06","assetId":"","machineName":"Máy dán thùng 1 / Carton sealing machine 1","area":"Khu vực lắp ráp - Assembly area","model":"FXJ6050","serial":"","eventType":"Inspection","content":"Kiểm tra băng tải, dây curoa và motor kéo.","reportedBy":"Kỹ thuật","responsible":"Kỹ thuật","result":"Đạt","cost":"","downtime":""}
+  {
+    "id": "EV-001",
+    "date": "2026-07-06",
+    "assetId": "",
+    "machineName": "Máy chấm keo gắn chụp bulb 1 / Gluing and attached BULB cover machine 1",
+    "area": "Khu vực lắp ráp - Assembly area",
+    "model": "DG100",
+    "serial": "",
+    "type": "Preventive Maintenance / Bảo trì định kỳ",
+    "description": "Kiểm tra, vệ sinh và xác nhận tình trạng thiết bị hoạt động bình thường.",
+    "reporter": "Nguyễn Lĩnh",
+    "responsible": "",
+    "result": "Completed / Hoàn thành",
+    "downtime": "",
+    "cost": "",
+    "note": "Demo data"
+  },
+  {
+    "id": "EV-002",
+    "date": "2026-07-05",
+    "assetId": "",
+    "machineName": "Máy chấm keo gắn chụp bulb 1 / Gluing and attached BULB cover machine 1",
+    "area": "Khu vực lắp ráp - Assembly area",
+    "model": "DG100",
+    "serial": "",
+    "type": "Repair / Sửa chữa",
+    "description": "Xử lý lỗi phát sinh, kiểm tra lại hoạt động sau sửa chữa.",
+    "reporter": "Nguyễn Lĩnh",
+    "responsible": "",
+    "result": "Completed / Hoàn thành",
+    "downtime": "",
+    "cost": "",
+    "note": "Demo data"
+  },
+  {
+    "id": "EV-003",
+    "date": "2026-07-04",
+    "assetId": "",
+    "machineName": "Băng tải lắp ráp 1 / Conveyor assembly 1",
+    "area": "Khu vực lắp ráp - Assembly area",
+    "model": "",
+    "serial": "",
+    "type": "Inspection / Kiểm tra",
+    "description": "Kiểm tra định kỳ theo kế hoạch bảo dưỡng tháng.",
+    "reporter": "Nguyễn Lĩnh",
+    "responsible": "",
+    "result": "Passed / Đạt",
+    "downtime": "",
+    "cost": "",
+    "note": "Demo data"
+  }
 ]

@@ -1,47 +1,52 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="vi">
 <head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>NANOCO Equipment Portal V4</title>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>NANOCO Equipment Portal - Biên Hòa Factory</title>
   <link rel="stylesheet" href="css/style.css" />
-  <script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
+  <script defer src="js/app.js"></script>
 </head>
 <body>
   <header class="topbar">
     <div class="brand">
-      <div class="logo">N</div>
+      <img src="assets/nanoco-logo.png" alt="NANOCO logo" class="logo" />
       <div>
         <h1>NANOCO EQUIPMENT PORTAL</h1>
-        <p data-i18n="subtitle">Tra cứu lý lịch và lịch sử thiết bị</p>
+        <p data-i18n="subtitle">Nhà Máy Biên Hòa - NANOCO / Biên Hòa Factory - NANOCO</p>
       </div>
     </div>
-    <div class="actions">
-      <button id="btnLang" class="ghost">EN</button>
-    </div>
+    <button id="langBtn" class="lang-btn">EN</button>
   </header>
 
-  <main class="shell">
-    <section class="panel intro">
+  <main class="container">
+    <section class="hero card">
       <div>
-        <h2 data-i18n="mvpTitle">Cổng tra cứu thiết bị</h2>
-        <p data-i18n="mvpDesc">Tìm kiếm bằng tên máy, model, serial, khu vực, hãng hoặc mã tài sản. Bấm vào thiết bị để xem lý lịch và lịch sử.</p>
+        <span class="eyebrow" data-i18n="eyebrow">Cổng tra cứu thiết bị</span>
+        <h2 data-i18n="heroTitle">Tra cứu lý lịch và lịch sử máy trong một trang</h2>
+        <p data-i18n="heroDesc">Tìm theo tên máy, mã tài sản, model, serial, khu vực, hãng sản xuất hoặc nhà cung cấp. Phù hợp để trình bày nhanh cho quản lý, auditor và khách hàng.</p>
       </div>
-      <div class="uploadBox">
-        <label for="excelFile" class="uploadBtn" data-i18n="loadExcel">Nạp file Excel</label>
-        <input id="excelFile" type="file" accept=".xlsx,.xls,.csv" hidden />
-        <button id="btnDemo" class="light" data-i18n="loadDemo">Dùng dữ liệu mẫu</button>
+      <div class="hero-badge">
+        <strong id="totalCount">0</strong>
+        <span data-i18n="equipmentCount">Thiết bị</span>
       </div>
     </section>
 
-    <section class="stats" id="stats"></section>
+    <section class="stats">
+      <div class="stat card"><b id="statEquip">0</b><span data-i18n="statEquipment">Tổng thiết bị</span></div>
+      <div class="stat card"><b id="statArea">0</b><span data-i18n="statArea">Khu vực</span></div>
+      <div class="stat card"><b id="statEvents">0</b><span data-i18n="statEvents">Sự kiện</span></div>
+      <div class="stat card"><b id="statVisible">0</b><span data-i18n="statVisible">Đang hiển thị</span></div>
+    </section>
 
-    <section class="panel searchPanel">
-      <div class="searchTop">
-        <h2 data-i18n="searchTitle">Tìm kiếm thiết bị</h2>
-        <span id="sourceLabel" class="badge muted">Demo data</span>
+    <section class="search card">
+      <div class="section-title">
+        <div>
+          <h3 data-i18n="searchTitle">Tìm kiếm thiết bị</h3>
+          <p data-i18n="searchHint">Nhập bất kỳ thông tin nào bạn biết: tên máy, model, serial, khu vực, hãng...</p>
+        </div>
       </div>
-      <input id="searchInput" class="search" data-i18n-placeholder="searchPh" placeholder="Nhập tên máy, model, serial, khu vực, hãng..." />
+      <input id="searchInput" class="search-input" placeholder="Nhập tên máy, model, serial, khu vực, hãng..." />
       <div class="filters">
         <select id="areaFilter"><option value="" data-i18n="allAreas">Tất cả khu vực</option></select>
         <select id="statusFilter"><option value="" data-i18n="allStatus">Tất cả trạng thái</option></select>
@@ -50,33 +55,26 @@
     </section>
 
     <section class="layout">
-      <aside class="listPanel panel">
-        <div class="listHeader"><strong data-i18n="resultList">Danh sách thiết bị</strong><span id="countText"></span></div>
-        <div id="equipmentList" class="equipmentList"></div>
+      <aside class="list card">
+        <div class="list-head">
+          <b data-i18n="equipmentList">Danh sách thiết bị</b>
+          <span id="listCount">0</span>
+        </div>
+        <div id="equipmentList"></div>
       </aside>
 
-      <section class="detailPanel panel" id="detailPanel">
+      <section class="detail card" id="detailPanel">
         <div class="empty">
-          <h3 data-i18n="selectMachine">Chọn một thiết bị</h3>
-          <p data-i18n="selectMachineDesc">Thông tin lý lịch và lịch sử sẽ hiển thị tại đây.</p>
+          <h3 data-i18n="emptyTitle">Chọn một thiết bị để xem chi tiết</h3>
+          <p data-i18n="emptyDesc">Hoặc nhập từ khóa vào ô tìm kiếm để lọc nhanh danh sách.</p>
         </div>
       </section>
     </section>
-
-    <footer>
-      <span>Prepared by Nguyễn Lĩnh</span>
-      <span>Engineering Technology Department · NANOCO</span>
-    </footer>
   </main>
 
-  <template id="cardTpl">
-    <button class="machineCard">
-      <div class="cardTop"><h3></h3><span class="status"></span></div>
-      <div class="meta"></div>
-      <div class="small"></div>
-    </button>
-  </template>
-
-  <script src="js/app.js"></script>
+  <footer>
+    <div>© NANOCO - Biên Hòa Factory / Nhà Máy Biên Hòa</div>
+    <div class="credit">Prepared & Developed by Nguyễn Lĩnh (Thomey)</div>
+  </footer>
 </body>
 </html>

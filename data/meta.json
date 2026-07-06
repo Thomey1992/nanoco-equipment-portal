@@ -1,0 +1,10 @@
+{
+  "sourceFile": "Quản lý thiết bị.xlsx",
+  "generatedAt": "2026-07-06T06:02:03",
+  "equipmentCount": 150,
+  "historyCount": 3,
+  "sheets": [
+    "Equipment_Register",
+    "Asset_Event_Log1"
+  ]
+}

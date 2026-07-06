@@ -1,0 +1,5 @@
+[
+  {"equipmentId":"EQ-0001","date":"2026-07-04","problem":"Head 8 báo bất thường","cause":"Nghi ngờ cáp hoặc quạt head","action":"Đổi cáp head 7 và 8, disable head 8 để theo dõi","downtimeMinutes":45,"user":"Khang","status":"Đã xử lý"},
+  {"equipmentId":"EQ-0003","date":"2026-07-03","problem":"Tín hiệu ultrasonic không ổn định","cause":"Dây cáp 5-pin có dấu hiệu lỗi","action":"Kiểm tra cáp, đặt mã Sono-Tek 02-04-00942-001","downtimeMinutes":180,"user":"Hòa","status":"Đang xử lý"},
+  {"equipmentId":"EQ-0004","date":"2026-07-02","problem":"Băng tải chạy yếu","cause":"Xích khô dầu và bụi bám","action":"Vệ sinh, bôi trơn, căn chỉnh độ căng xích","downtimeMinutes":60,"user":"Hòa","status":"Đã xử lý"}
+]

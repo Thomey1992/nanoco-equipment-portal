@@ -1,0 +1,7 @@
+[
+  {"equipmentId":"EQ-0001","item":"Vệ sinh nozzle, feeder, camera, kiểm tra quạt head","frequency":"Weekly","lastDate":"2026-07-01","nextDate":"2026-07-08","owner":"Khang","status":"Sắp đến hạn"},
+  {"equipmentId":"EQ-0002","item":"Kiểm tra nhiệt độ zone, conveyor chain, quạt làm mát","frequency":"Weekly","lastDate":"2026-07-02","nextDate":"2026-07-09","owner":"Khang","status":"Đúng hạn"},
+  {"equipmentId":"EQ-0003","item":"Kiểm tra đầu hàn, dây tín hiệu, nguồn ultrasonic","frequency":"Monthly","lastDate":"2026-06-20","nextDate":"2026-07-20","owner":"Hòa","status":"Đúng hạn"},
+  {"equipmentId":"EQ-0004","item":"Vệ sinh, bôi trơn xích, kiểm tra bạc đạn và motor","frequency":"Weekly","lastDate":"2026-07-03","nextDate":"2026-07-10","owner":"Hòa","status":"Đúng hạn"},
+  {"equipmentId":"EQ-0005","item":"Kiểm tra sai số đo công suất, dòng, áp, PF","frequency":"Monthly","lastDate":"2026-07-05","nextDate":"2026-08-05","owner":"Khang","status":"Đúng hạn"}
+]

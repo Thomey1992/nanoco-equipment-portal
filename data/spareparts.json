@@ -1,0 +1,8 @@
+[
+  {"code":"SP-0001","name":"Nozzle SMT","spec":"Panasonic NPM-W2 standard","equipmentId":"EQ-0001","qty":12,"minQty":6,"unit":"pcs","location":"SMT Cabinet","note":"Phụ tùng hao mòn"},
+  {"code":"SP-0002","name":"Feeder spare parts","spec":"8mm/12mm feeder kit","equipmentId":"EQ-0001","qty":4,"minQty":5,"unit":"set","location":"SMT Cabinet","note":"Cần bổ sung"},
+  {"code":"SP-0003","name":"Conveyor chain","spec":"Reflow conveyor chain","equipmentId":"EQ-0002","qty":1,"minQty":1,"unit":"set","location":"Kho kỹ thuật","note":"Dự phòng tối thiểu"},
+  {"code":"SP-0004","name":"Ultrasonic cable","spec":"Sono-Tek 02-04-00942-001, 3m, 5-pin","equipmentId":"EQ-0003","qty":0,"minQty":1,"unit":"pcs","location":"Đang đặt hàng","note":"Thiếu tồn"},
+  {"code":"SP-0005","name":"Bearing","spec":"6204ZZ","equipmentId":"EQ-0004","qty":10,"minQty":4,"unit":"pcs","location":"Kho kỹ thuật","note":"Dùng cho băng tải"},
+  {"code":"SP-0006","name":"Power test probe","spec":"Spring probe 3A","equipmentId":"EQ-0005","qty":30,"minQty":20,"unit":"pcs","location":"Assembly Cabinet","note":"Thay khi mòn đầu tiếp xúc"}
+]

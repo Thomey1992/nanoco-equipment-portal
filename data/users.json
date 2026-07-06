@@ -1,0 +1,6 @@
+[
+  {"id":"U-001","name":"Nguyễn Lĩnh","role":"TBP Kỹ thuật Công nghệ","department":"Technical Technology"},
+  {"id":"U-002","name":"Khang","role":"Kỹ thuật điện / SMT","department":"Technical"},
+  {"id":"U-003","name":"Hòa","role":"Kỹ thuật cơ khí","department":"Technical"},
+  {"id":"U-004","name":"Tuấn","role":"Giám đốc nhà máy","department":"Factory"}
+]

@@ -1,16 +1,22 @@
-# NANOCO Equipment Portal V7
+# NANOCO Equipment Portal Enterprise V1.0
 
-Bản V7 có dashboard tháng:
-- lọc bảo trì / sửa chữa / hiệu chuẩn / kiểm định / tất cả hoạt động,
-- danh sách sắp tới hạn kiểm định và hiệu chuẩn,
-- so với kế hoạch bảo trì,
-- danh sách máy chưa bảo trì trong tháng,
-- máy đang hư/dừng,
-- máy chờ thanh lý,
-- bảng bảo trì có cột phần trăm hoàn thành.
+Biên Hòa Factory - NANOCO / Nhà Máy Biên Hòa - NANOCO
 
-Dữ liệu đọc từ file Excel khi bấm **Nạp Excel**. Web nhận các sheet:
-- `Equipment_Register`
-- `Asset_Event_Log` hoặc `Asset_Event_Log1`
+## Scope
+- ERP/CMMS style equipment lookup portal
+- Bilingual Vietnamese / English
+- Dashboard by month
+- Upcoming PM, calibration, inspection lists
+- Maintenance completion percentage
+- Equipment profile and event timeline
+- Excel file loader for Equipment_Register and Asset_Event_Log / Asset_Event_Log1
+- Footer credit: Nguyễn Lĩnh (Thomey)
 
-Prepared & Developed by Nguyễn Lĩnh (Thomey).
+## Upload to GitHub
+Upload these folders/files to repository root:
+- assets
+- css
+- data
+- js
+- index.html
+- README.md

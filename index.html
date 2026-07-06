@@ -1,80 +1,131 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="vi">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>NANOCO Equipment Portal - Biên Hòa Factory</title>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>NANOCO Equipment Portal</title>
   <link rel="stylesheet" href="css/style.css" />
-  <script defer src="js/app.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/qrcodejs@1.0.0/qrcode.min.js"></script>
 </head>
 <body>
   <header class="topbar">
     <div class="brand">
-      <img src="assets/nanoco-logo.png" alt="NANOCO logo" class="logo" />
+      <img src="assets/nanoco-logo.png" alt="NANOCO" />
       <div>
         <h1>NANOCO EQUIPMENT PORTAL</h1>
-        <p data-i18n="subtitle">Nhà Máy Biên Hòa - NANOCO / Biên Hòa Factory - NANOCO</p>
+        <p data-vi="Nhà Máy Biên Hòa - NANOCO" data-en="Bien Hoa Factory - NANOCO">Nhà Máy Biên Hòa - NANOCO</p>
       </div>
     </div>
-    <button id="langBtn" class="lang-btn">EN</button>
+    <div class="topActions">
+      <label class="uploadBtn"><input id="excelInput" type="file" accept=".xlsx,.xls,.csv" /><span data-vi="Nạp Excel" data-en="Load Excel">Nạp Excel</span></label>
+      <button id="refreshBtn" class="ghost" data-vi="Refresh" data-en="Refresh">Refresh</button>
+      <button id="langBtn" class="lang">EN</button>
+    </div>
   </header>
 
-  <main class="container">
+  <main class="shell">
     <section class="hero card">
       <div>
-        <span class="eyebrow" data-i18n="eyebrow">Cổng tra cứu thiết bị</span>
-        <h2 data-i18n="heroTitle">Tra cứu lý lịch và lịch sử máy trong một trang</h2>
-        <p data-i18n="heroDesc">Tìm theo tên máy, mã tài sản, model, serial, khu vực, hãng sản xuất hoặc nhà cung cấp. Phù hợp để trình bày nhanh cho quản lý, auditor và khách hàng.</p>
+        <span class="eyebrow" data-vi="CỔNG TRA CỨU THIẾT BỊ" data-en="EQUIPMENT MANAGEMENT PORTAL">CỔNG TRA CỨU THIẾT BỊ</span>
+        <h2 data-vi="Tra cứu lý lịch, lịch sử và dashboard bảo trì" data-en="Equipment profile, history and maintenance dashboard">Tra cứu lý lịch, lịch sử và dashboard bảo trì</h2>
+        <p data-vi="Tìm theo tên máy, model, serial, khu vực, hãng, nhà cung cấp hoặc mã tài sản. Nạp file Excel để cập nhật dữ liệu mới nhất." data-en="Search by machine name, model, serial, area, maker, vendor, or asset code. Load Excel to update the latest data.">Tìm theo tên máy, model, serial, khu vực, hãng, nhà cung cấp hoặc mã tài sản. Nạp file Excel để cập nhật dữ liệu mới nhất.</p>
       </div>
-      <div class="hero-badge">
-        <strong id="totalCount">0</strong>
-        <span data-i18n="equipmentCount">Thiết bị</span>
-      </div>
+      <div class="heroBadge"><b id="heroTotal">0</b><span data-vi="Thiết bị" data-en="Equipment">Thiết bị</span></div>
     </section>
 
-    <section class="stats">
-      <div class="stat card"><b id="statEquip">0</b><span data-i18n="statEquipment">Tổng thiết bị</span></div>
-      <div class="stat card"><b id="statArea">0</b><span data-i18n="statArea">Khu vực</span></div>
-      <div class="stat card"><b id="statEvents">0</b><span data-i18n="statEvents">Sự kiện</span></div>
-      <div class="stat card"><b id="statVisible">0</b><span data-i18n="statVisible">Đang hiển thị</span></div>
-    </section>
-
-    <section class="search card">
-      <div class="section-title">
+    <section class="card dashboard">
+      <div class="sectionHead">
         <div>
-          <h3 data-i18n="searchTitle">Tìm kiếm thiết bị</h3>
-          <p data-i18n="searchHint">Nhập bất kỳ thông tin nào bạn biết: tên máy, model, serial, khu vực, hãng...</p>
+          <h3 data-vi="Dashboard trong tháng" data-en="Monthly dashboard">Dashboard trong tháng</h3>
+          <p data-vi="Lọc các hoạt động PM, sửa chữa, hiệu chuẩn, kiểm định và so với kế hoạch bảo trì." data-en="Filter PM, repair, calibration, accreditation and compare with maintenance plan.">Lọc các hoạt động PM, sửa chữa, hiệu chuẩn, kiểm định và so với kế hoạch bảo trì.</p>
+        </div>
+        <div class="dashControls">
+          <input id="monthFilter" type="month" />
+          <select id="activityFilter">
+            <option value="all" data-vi="Tất cả hoạt động" data-en="All activities">Tất cả hoạt động</option>
+            <option value="pm" data-vi="Bảo trì" data-en="Maintenance">Bảo trì</option>
+            <option value="repair" data-vi="Sửa chữa" data-en="Repair">Sửa chữa</option>
+            <option value="calibration" data-vi="Hiệu chuẩn" data-en="Calibration">Hiệu chuẩn</option>
+            <option value="accreditation" data-vi="Kiểm định" data-en="Accreditation">Kiểm định</option>
+          </select>
+          <span id="sourceBadge" class="badge neutral">Demo data</span>
         </div>
       </div>
-      <input id="searchInput" class="search-input" placeholder="Nhập tên máy, model, serial, khu vực, hãng..." />
+
+      <div class="metrics">
+        <div class="metric"><b id="mTotal">0</b><span data-vi="Tổng thiết bị" data-en="Equipment">Tổng thiết bị</span></div>
+        <div class="metric"><b id="mMonthAll">0</b><span data-vi="Hoạt động trong tháng" data-en="Monthly activities">Hoạt động trong tháng</span></div>
+        <div class="metric"><b id="mMonthPm">0</b><span data-vi="Đã bảo trì" data-en="PM completed">Đã bảo trì</span></div>
+        <div class="metric"><b id="mMonthRepair">0</b><span data-vi="Sửa chữa" data-en="Repair">Sửa chữa</span></div>
+        <div class="metric"><b id="mMonthCal">0</b><span data-vi="Hiệu chuẩn" data-en="Calibration">Hiệu chuẩn</span></div>
+        <div class="metric"><b id="mMonthAcc">0</b><span data-vi="Kiểm định" data-en="Accreditation">Kiểm định</span></div>
+      </div>
+
+      <div class="dashGrid">
+        <div class="dashPanel">
+          <div class="panelTitle"><span data-vi="So với kế hoạch bảo trì" data-en="Maintenance plan vs actual">So với kế hoạch bảo trì</span><b id="pmPercentText">0%</b></div>
+          <div class="progress"><div id="pmProgress" style="width:0%"></div></div>
+          <div class="miniNote" id="pmSummary">-</div>
+        </div>
+        <div class="dashPanel danger">
+          <div class="panelTitle"><span data-vi="Máy đang hư / dừng" data-en="Broken / stopped machines">Máy đang hư / dừng</span><b id="brokenCount">0</b></div>
+          <div id="brokenList" class="miniList"></div>
+        </div>
+        <div class="dashPanel warning">
+          <div class="panelTitle"><span data-vi="Máy chưa bảo trì trong tháng" data-en="No PM this month">Máy chưa bảo trì trong tháng</span><b id="noPmCount">0</b></div>
+          <div id="noPmList" class="miniList"></div>
+        </div>
+        <div class="dashPanel mutedPanel">
+          <div class="panelTitle"><span data-vi="Máy chờ thanh lý" data-en="Waiting for disposal">Máy chờ thanh lý</span><b id="scrapCount">0</b></div>
+          <div id="scrapList" class="miniList"></div>
+        </div>
+      </div>
+    </section>
+
+    <section class="card searchBox">
+      <div class="sectionHead">
+        <div>
+          <h3 data-vi="Tìm kiếm thiết bị" data-en="Equipment search">Tìm kiếm thiết bị</h3>
+          <p data-vi="Nhập bất kỳ thông tin nào bạn biết" data-en="Enter any information you know">Nhập bất kỳ thông tin nào bạn biết</p>
+        </div>
+      </div>
+      <input id="searchInput" class="search" placeholder="Nhập tên máy, model, serial, khu vực, hãng..." />
       <div class="filters">
-        <select id="areaFilter"><option value="" data-i18n="allAreas">Tất cả khu vực</option></select>
-        <select id="statusFilter"><option value="" data-i18n="allStatus">Tất cả trạng thái</option></select>
-        <select id="typeFilter"><option value="" data-i18n="allTypes">Tất cả loại thiết bị</option></select>
+        <select id="areaFilter"><option value="" data-vi="Tất cả khu vực" data-en="All areas">Tất cả khu vực</option></select>
+        <select id="statusFilter"><option value="" data-vi="Tất cả trạng thái" data-en="All status">Tất cả trạng thái</option></select>
+        <select id="typeFilter"><option value="" data-vi="Tất cả loại thiết bị" data-en="All types">Tất cả loại thiết bị</option></select>
       </div>
     </section>
 
     <section class="layout">
-      <aside class="list card">
-        <div class="list-head">
-          <b data-i18n="equipmentList">Danh sách thiết bị</b>
-          <span id="listCount">0</span>
-        </div>
-        <div id="equipmentList"></div>
+      <aside class="card listPane">
+        <div class="paneTitle"><span data-vi="Danh sách thiết bị" data-en="Equipment list">Danh sách thiết bị</span><b id="resultCount">0</b></div>
+        <div id="equipmentList" class="equipmentList"></div>
       </aside>
-
-      <section class="detail card" id="detailPanel">
-        <div class="empty">
-          <h3 data-i18n="emptyTitle">Chọn một thiết bị để xem chi tiết</h3>
-          <p data-i18n="emptyDesc">Hoặc nhập từ khóa vào ô tìm kiếm để lọc nhanh danh sách.</p>
-        </div>
+      <section class="card detailPane">
+        <div id="emptyState" class="emptyState"><h3 data-vi="Chọn một thiết bị" data-en="Select equipment">Chọn một thiết bị</h3><p data-vi="Bấm vào thiết bị bên trái để xem lý lịch, lịch sử, QR và kế hoạch bảo trì." data-en="Click equipment on the left to view profile, history, QR, and maintenance plan.">Bấm vào thiết bị bên trái để xem lý lịch, lịch sử, QR và kế hoạch bảo trì.</p></div>
+        <div id="detail" class="hidden"></div>
       </section>
+    </section>
+
+    <section class="card tableCard">
+      <div class="sectionHead"><div><h3 data-vi="Danh sách bảo trì theo kế hoạch" data-en="Maintenance plan list">Danh sách bảo trì theo kế hoạch</h3><p data-vi="Có thêm cột phần trăm hoàn thành theo tháng đang chọn." data-en="Includes completion percentage for selected month.">Có thêm cột phần trăm hoàn thành theo tháng đang chọn.</p></div></div>
+      <div class="tableWrap"><table id="pmTable"></table></div>
+    </section>
+
+    <section class="dueGrid">
+      <div class="card dueCard"><h3 data-vi="Sắp tới hạn kiểm định" data-en="Upcoming accreditation">Sắp tới hạn kiểm định</h3><div id="dueAccList" class="dueList"></div></div>
+      <div class="card dueCard"><h3 data-vi="Sắp tới hạn hiệu chuẩn" data-en="Upcoming calibration">Sắp tới hạn hiệu chuẩn</h3><div id="dueCalList" class="dueList"></div></div>
+      <div class="card dueCard"><h3 data-vi="Hoạt động trong tháng" data-en="Monthly activities">Hoạt động trong tháng</h3><div id="monthEventList" class="dueList"></div></div>
     </section>
   </main>
 
   <footer>
-    <div>© NANOCO - Biên Hòa Factory / Nhà Máy Biên Hòa</div>
-    <div class="credit">Prepared & Developed by Nguyễn Lĩnh (Thomey)</div>
+    <span>© NANOCO - Nhà Máy Biên Hòa / Bien Hoa Factory</span>
+    <strong>Prepared & Developed by Nguyễn Lĩnh (Thomey)</strong>
+    <span>Version 7.0</span>
   </footer>
+  <script src="js/app.js"></script>
 </body>
 </html>

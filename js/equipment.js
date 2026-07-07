@@ -1,162 +1,107 @@
-// ======================================
-// NEMS Enterprise V3
-// equipment.js
-// ======================================
-
 const EQ = {
-
-    id: "Mã tài sản",
-
-    assetName: "Tên Theo mã tài sản",
-
-    name: "TÊN\nName",
-
-    model: "MODEL",
-
-    serial: "Serial",
-
-    manufacturer: "HÃNG SX\nManufacturer",
-
-    vendor: "NHÀ CUNG CẤP\nVendor",
-
-    position: "VỊ TRÍ LẮP ĐẶT\nPosition",
-
-    maintenance: "CHU KỲ BẢO DƯỠNG\nMaintenance cycle",
-
-    install: "NGÀY LẮP ĐẶT\nInstallation date",
-
-    note: "GHI CHÚ\nNote"
-
+  id: ["Mã tài sản", "ID"],
+  position: ["Vị trí khu vực", "VỊ TRÍ LẮP ĐẶT\nPosition"],
+  name: ["Tên thiết bị", "TÊN\nName"],
+  model: ["Model", "MODEL"],
+  serial: ["Số Serial", "Serial"],
+  status: ["Loại trạng thái/sự kiện", "Trạng thái"],
+  assetName: ["Tên theo mã tài sản", "Tên Theo mã tài sản"],
+  manufacturer: ["HÃNG SX\nManufacturer"],
+  vendor: ["NHÀ CUNG CẤP\nVendor"],
+  maintenance: ["CHU KỲ BẢO DƯỠNG\nMaintenance cycle"],
+  install: ["NGÀY LẮP ĐẶT\nInstallation date"],
+  note: ["GHI CHÚ\nNote"]
 };
 
-let equipmentFilter = [];
+function eqValue(item, keys) {
+  return safeText(getByKeys(item, keys));
+}
 
 function initEquipment() {
-
-    buildEquipmentFilter();
-
-    renderEquipment();
-
-    bindEquipmentEvent();
-
+  buildEquipmentFilter();
+  renderEquipment();
+  bindEquipmentEvent();
 }
 
 function buildEquipmentFilter() {
+  const area = document.getElementById("areaFilter");
+  const status = document.getElementById("statusFilter");
 
-    const area = document.getElementById("areaFilter");
+  area.innerHTML = '<option value="">Tất cả khu vực</option>';
+  status.innerHTML = '<option value="">Tất cả trạng thái</option>';
 
-    area.innerHTML =
-        '<option value="">Tất cả khu vực</option>';
+  const areaSet = new Set();
+  const statusSet = new Set();
 
-    const list =
-        uniqueValues(
-            equipmentData,
-            EQ.position
-        );
+  equipmentData.forEach(item => {
+    const a = eqValue(item, EQ.position);
+    const s = eqValue(item, EQ.status);
 
-    list.forEach(item => {
+    if (a) areaSet.add(a);
+    if (s) statusSet.add(s);
+  });
 
-        area.innerHTML +=
-            `<option value="${item}">
-                ${item}
-            </option>`;
+  [...areaSet].sort().forEach(x => {
+    area.innerHTML += `<option value="${x}">${x}</option>`;
+  });
 
-    });
-
+  [...statusSet].sort().forEach(x => {
+    status.innerHTML += `<option value="${x}">${x}</option>`;
+  });
 }
 
 function bindEquipmentEvent() {
-
-    document
-        .getElementById("areaFilter")
-        .addEventListener("change", renderEquipment);
-
-    document
-        .getElementById("searchInput")
-        .addEventListener("keyup", renderEquipment);
-
+  document.getElementById("areaFilter").addEventListener("change", renderEquipment);
+  document.getElementById("statusFilter").addEventListener("change", renderEquipment);
+  document.getElementById("searchInput").addEventListener("keyup", renderEquipment);
 }
 
 function renderEquipment() {
+  const tbody = document.getElementById("equipmentTableBody");
+  clearElement(tbody);
 
-    const tbody =
-        document.getElementById("equipmentTableBody");
+  let data = [...equipmentData];
 
-    clearElement(tbody);
+  const area = document.getElementById("areaFilter").value;
+  const status = document.getElementById("statusFilter").value;
+  const keyword = document.getElementById("searchInput").value;
 
-    let data = [...equipmentData];
+  if (area) {
+    data = data.filter(item => eqValue(item, EQ.position) === area);
+  }
 
-    const area =
-        document.getElementById("areaFilter").value;
+  if (status) {
+    data = data.filter(item => eqValue(item, EQ.status) === status);
+  }
 
-    const keyword =
-        document.getElementById("searchInput").value;
+  if (keyword) {
+    data = data.filter(item => matchKeyword(item, keyword));
+  }
 
-    if (area !== "") {
+  document.getElementById("equipmentCount").innerHTML = data.length + " dòng";
 
-        data = data.filter(item =>
-            safeText(item[EQ.position]) === area
-        );
+  if (data.length === 0) {
+    showEmptyRow(tbody, 7, "Không có dữ liệu.");
+    return;
+  }
 
-    }
+  data.forEach(item => {
+    const id = eqValue(item, EQ.id);
 
-    if (keyword !== "") {
-
-        data = data.filter(item =>
-            matchKeyword(item, keyword)
-        );
-
-    }
-
-    document.getElementById("equipmentCount").innerHTML =
-        data.length + " dòng";
-
-    if (data.length === 0) {
-
-        showEmptyRow(
-            tbody,
-            7,
-            "Không có dữ liệu."
-        );
-
-        return;
-
-    }
-
-    data.forEach(item => {
-
-        tbody.innerHTML += `
-
-<tr>
-
-<td>${safeText(item[EQ.id])}</td>
-
-<td>${safeText(item[EQ.position])}</td>
-
-<td>${safeText(item[EQ.name])}</td>
-
-<td>${safeText(item[EQ.model])}</td>
-
-<td>${safeText(item[EQ.serial])}</td>
-
-<td>${safeText(item[EQ.manufacturer])}</td>
-
-<td>
-
-<button
-class="primary-btn"
-onclick="showEquipment('${safeText(item[EQ.id])}')">
-
-Xem
-
-</button>
-
-</td>
-
-</tr>
-
-`;
-
-    });
-
+    tbody.innerHTML += `
+      <tr>
+        <td>${id}</td>
+        <td>${eqValue(item, EQ.position)}</td>
+        <td>${eqValue(item, EQ.name)}</td>
+        <td>${eqValue(item, EQ.model)}</td>
+        <td>${eqValue(item, EQ.serial)}</td>
+        <td>${eqValue(item, EQ.status)}</td>
+        <td>
+          <button class="primary-btn" onclick="showEquipment('${id}')">
+            Xem
+          </button>
+        </td>
+      </tr>
+    `;
+  });
 }

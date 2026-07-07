@@ -1,47 +1,39 @@
 const EQ = {
   no: "No.",
-  category: "Phân loại",
   asset: "Mã tài sản",
-  assetName: "Tên Theo mã tài sản",
   name: "TÊN\nName",
   model: "MODEL",
   serial: "Serial",
-  parameter: "THÔNG SỐ KỸ THUẬT\nParameter",
-  quantity: "SỐ LƯỢNG\nQuantity",
-  manufacturer: "HÃNG SX\nManufacturer",
-  vendor: "NHÀ CUNG CẤP\nVendor",
-  year: "Năm sản xuất",
   position: "VỊ TRÍ LẮP ĐẶT\nPosition",
-  maintenance: "CHU KỲ BẢO DƯỠNG\nMaintenance cycle",
-  install: "NGÀY LẮP ĐẶT\nInstallation date",
-  accreditation: "KIỂM ĐỊNH\nAccreditation",
-  calibration: "Hiệu chuẩn\nCalibration",
-  note: "GHI CHÚ\nNote",
-  spare: "Phụ tùng"
+  maintenance: "CHU KỲ BẢO DƯỠNG\nMaintenance cycle"
 };
 
-function eqText(item, key) {
-  return safeText(item[key]);
-}
+function buildEquipmentList() {
+  let currentArea = "";
 
-function eqId(item) {
-  return eqText(item, EQ.asset) || eqText(item, EQ.no);
-}
+  return equipmentData
+    .map(row => {
+      const no = safeText(row[EQ.no]);
+      const name = safeText(row[EQ.name]);
 
-function isRealEquipment(item) {
-  const name = eqText(item, EQ.name);
-  const model = eqText(item, EQ.model);
-  const no = eqText(item, EQ.no);
+      if (no.includes("Khu vực") || no.includes("Area")) {
+        currentArea = no;
+        return null;
+      }
 
-  if (!name && !model) return false;
-  if (no.includes("Khu vực")) return false;
-  if (no.includes("Area")) return false;
+      if (!name) return null;
 
-  return true;
-}
-
-function getRealEquipmentData() {
-  return equipmentData.filter(isRealEquipment);
+      return {
+        id: safeText(row[EQ.asset]) || no,
+        area: safeText(row[EQ.position]) || currentArea,
+        name: name,
+        model: safeText(row[EQ.model]),
+        serial: safeText(row[EQ.serial]),
+        maintenance: safeText(row[EQ.maintenance]),
+        raw: row
+      };
+    })
+    .filter(Boolean);
 }
 
 function initEquipment() {
@@ -59,9 +51,8 @@ function buildEquipmentFilter() {
 
   const areaSet = new Set();
 
-  getRealEquipmentData().forEach(item => {
-    const areaName = eqText(item, EQ.position);
-    if (areaName) areaSet.add(areaName);
+  buildEquipmentList().forEach(item => {
+    if (item.area) areaSet.add(item.area);
   });
 
   [...areaSet].sort().forEach(x => {
@@ -71,47 +62,47 @@ function buildEquipmentFilter() {
 
 function bindEquipmentEvent() {
   document.getElementById("areaFilter").addEventListener("change", renderEquipment);
-  document.getElementById("statusFilter").addEventListener("change", renderEquipment);
   document.getElementById("searchInput").addEventListener("keyup", renderEquipment);
 }
 
 function renderEquipment() {
   const tbody = document.getElementById("equipmentTableBody");
-  clearElement(tbody);
+  tbody.innerHTML = "";
 
-  let data = getRealEquipmentData();
+  let data = buildEquipmentList();
 
   const area = document.getElementById("areaFilter").value;
-  const keyword = document.getElementById("searchInput").value;
+  const keyword = safeText(document.getElementById("searchInput").value).toLowerCase();
 
   if (area) {
-    data = data.filter(item => eqText(item, EQ.position) === area);
+    data = data.filter(x => x.area === area);
   }
 
   if (keyword) {
-    data = data.filter(item => matchKeyword(item, keyword));
+    data = data.filter(x =>
+      JSON.stringify(x).toLowerCase().includes(keyword)
+    );
   }
 
   document.getElementById("equipmentCount").innerHTML = data.length + " dòng";
+  document.getElementById("totalEquipment").innerHTML = data.length;
 
   if (data.length === 0) {
-    showEmptyRow(tbody, 7, "Không có dữ liệu.");
+    tbody.innerHTML = `<tr><td colspan="7">Không có dữ liệu.</td></tr>`;
     return;
   }
 
   data.forEach(item => {
-    const id = eqId(item);
-
     tbody.innerHTML += `
       <tr>
-        <td>${id}</td>
-        <td>${eqText(item, EQ.position)}</td>
-        <td>${eqText(item, EQ.name)}</td>
-        <td>${eqText(item, EQ.model)}</td>
-        <td>${eqText(item, EQ.serial)}</td>
-        <td>${eqText(item, EQ.maintenance)}</td>
+        <td>${item.id}</td>
+        <td>${item.area}</td>
+        <td>${item.name}</td>
+        <td>${item.model}</td>
+        <td>${item.serial}</td>
+        <td>${item.maintenance}</td>
         <td>
-          <button class="primary-btn" onclick="showEquipment('${id}')">
+          <button class="primary-btn" onclick="showEquipment('${item.id}')">
             Xem
           </button>
         </td>

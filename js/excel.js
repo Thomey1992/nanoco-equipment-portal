@@ -14,9 +14,7 @@ async function loadExcel() {
 
         showLoading();
 
-        const response = await fetch(
-            EXCEL_FILE + "?v=" + new Date().getTime()
-        );
+       const response = await fetch(EXCEL_FILE);
 
         if (!response.ok) {
 

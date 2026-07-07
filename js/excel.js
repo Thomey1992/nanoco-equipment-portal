@@ -29,7 +29,7 @@ async function loadExcel() {
             XLSX.read(arrayBuffer, {
                 type: "array"
             });
-
+console.log(workbook.SheetNames);
         equipmentData =
             XLSX.utils.sheet_to_json(
                 workbook.Sheets["Equipment_Register"],

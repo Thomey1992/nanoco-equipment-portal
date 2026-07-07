@@ -1,28 +1,45 @@
-const DATA_FILES={equipment:'data/equipment.json',events:'data/events.json',maintenance:'data/maintenance.json',pm:'data/pm_schedule.json'};
-const state={equipment:[],events:[],maintenance:[],pm:[],filtered:[],selectedId:null};
-document.addEventListener('DOMContentLoaded',init);
-async function init(){bind();await loadData();prepare();renderAll();}
-function bind(){id('reloadBtn')?.addEventListener('click',async()=>{await loadData();prepare();renderAll();toast('Đã tải lại dữ liệu')});id('exportCsvBtn')?.addEventListener('click',exportCurrentEquipmentCsv);['searchInput','areaFilter','lineFilter','statusFilter','criticalFilter'].forEach(x=>id(x)?.addEventListener('input',applyFilters));document.querySelectorAll('.tab-btn').forEach(btn=>btn.addEventListener('click',()=>{document.querySelectorAll('.tab-btn').forEach(b=>b.classList.remove('active'));document.querySelectorAll('.tab-content').forEach(c=>c.classList.remove('active'));btn.classList.add('active');id(btn.dataset.tab).classList.add('active')}));}
-async function loadData(){try{const [eq,ev,mt,pm]=await Promise.all([fetchJson(DATA_FILES.equipment),fetchJson(DATA_FILES.events),fetchJson(DATA_FILES.maintenance),fetchJson(DATA_FILES.pm)]);state.equipment=normEq(eq);state.events=normEvents(ev);state.maintenance=normMaintenance(mt);state.pm=normPm(pm)}catch(e){console.error(e);toast('Không tải được data/*.json. Kiểm tra tên file và cấu trúc thư mục.')}}
-async function fetchJson(path){const r=await fetch(`${path}?v=${Date.now()}`);if(!r.ok)throw new Error(path);return r.json();}
-function prepare(){state.filtered=[...state.equipment];if(!state.selectedId&&state.equipment[0])state.selectedId=state.equipment[0].id;}
-function normEq(a){return Array.isArray(a)?a.map((x,i)=>({id:t(x.id)||`EQ-${String(i+1).padStart(4,'0')}`,name:t(x.name),area:t(x.area),line:t(x.line),model:t(x.model),serial:t(x.serial),supplier:t(x.supplier),installDate:t(x.installDate),status:t(x.status)||'Đang sử dụng',criticalLevel:t(x.criticalLevel)||'B',owner:t(x.owner),assetTag:t(x.assetTag),location:t(x.location),power:t(x.power),qr:t(x.qr),image:t(x.image),note:t(x.note)})):[];}
-function normEvents(a){return Array.isArray(a)?a.map(x=>({equipmentId:t(x.equipmentId),date:t(x.date),type:t(x.type),title:t(x.title),cause:t(x.cause),action:t(x.action),user:t(x.user),downtimeMinutes:num(x.downtimeMinutes),status:t(x.status)||'Hoàn thành',note:t(x.note)})):[];}
-function normMaintenance(a){return Array.isArray(a)?a.map(x=>({equipmentId:t(x.equipmentId),date:t(x.date),item:t(x.item),content:t(x.content),result:t(x.result)||'Đạt',user:t(x.user),note:t(x.note)})):[];}
-function normPm(a){return Array.isArray(a)?a.map(x=>({equipmentId:t(x.equipmentId),item:t(x.item),frequency:t(x.frequency),lastDate:t(x.lastDate),nextDate:t(x.nextDate),owner:t(x.owner),note:t(x.note)})):[];}
-function renderAll(){fillFilters();applyFilters();renderStats();}
-function fillFilters(){fillSelect('areaFilter','Tất cả khu vực',unique(state.equipment.map(x=>x.area)));fillSelect('lineFilter','Tất cả line',unique(state.equipment.map(x=>x.line)));fillSelect('statusFilter','Tất cả trạng thái',unique(state.equipment.map(x=>x.status)));fillSelect('criticalFilter','Tất cả mức quan trọng',unique(state.equipment.map(x=>x.criticalLevel)));}
-function fillSelect(elId,label,arr){const el=id(elId),old=el?.value;if(!el)return;el.innerHTML=`<option value="">${label}</option>`+arr.map(v=>`<option value="${esc(v)}">${esc(v)}</option>`).join('');el.value=old||'';}
-function applyFilters(){const kw=val('searchInput').toLowerCase(),area=val('areaFilter'),line=val('lineFilter'),status=val('statusFilter'),level=val('criticalFilter');state.filtered=state.equipment.filter(e=>{const s=[e.id,e.name,e.area,e.line,e.model,e.serial,e.supplier,e.owner,e.assetTag,e.location].join(' ').toLowerCase();return(!kw||s.includes(kw))&&(!area||e.area===area)&&(!line||e.line===line)&&(!status||e.status===status)&&(!level||e.criticalLevel===level)});if(!state.filtered.some(e=>e.id===state.selectedId))state.selectedId=state.filtered[0]?.id||null;renderEquipmentList();renderProfile();renderTables();renderStats();}
-function renderStats(){txt('totalEquipment',state.equipment.length);txt('runningEquipment',state.equipment.filter(e=>e.status==='Đang sử dụng').length);txt('repairEquipment',state.equipment.filter(e=>e.status==='Chờ sửa chữa').length);txt('totalEvents',state.events.length);txt('totalDowntime',`${state.events.reduce((s,e)=>s+e.downtimeMinutes,0)} phút`);txt('duePmCount',state.pm.filter(p=>pmStatus(p.nextDate).key!=='ok').length);}
-function renderEquipmentList(){txt('filteredCount',state.filtered.length);const box=id('equipmentList');if(!box)return;if(!state.filtered.length){box.innerHTML='<div class="empty">Không có thiết bị phù hợp.</div>';return}box.innerHTML=state.filtered.map(e=>`<button class="equipment-card ${e.id===state.selectedId?'active':''}" data-id="${esc(e.id)}"><div class="equipment-card-top"><strong>${esc(e.name)}</strong><span class="equipment-code">${esc(e.id)}</span></div><div class="equipment-meta">${esc(e.area)} / ${esc(e.line)}</div><div class="equipment-badges"><span class="badge ${statusCls(e.status)}">${esc(e.status)}</span><span class="badge ${levelCls(e.criticalLevel)}">Level ${esc(e.criticalLevel)}</span></div></button>`).join('');box.querySelectorAll('.equipment-card').forEach(b=>b.addEventListener('click',()=>{state.selectedId=b.dataset.id;renderEquipmentList();renderProfile();renderTables()}));}
-function renderProfile(){const e=selected(),box=id('equipmentProfile'),st=id('profileStatus');if(!box)return;if(!e){box.innerHTML='<div class="profile-empty">Chọn một thiết bị để xem lý lịch.</div>';if(st)st.textContent='-';return}if(st){st.textContent=e.status;st.className=`badge ${statusCls(e.status)}`}const ev=byEq(state.events),mt=byEq(state.maintenance),pm=byEq(state.pm);const downtime=ev.reduce((s,x)=>s+x.downtimeMinutes,0);box.innerHTML=`<div class="profile-header"><div><h3>${esc(e.name)}</h3><p>${esc(e.id)} · ${esc(e.area)} · ${esc(e.line)}</p></div><div><span class="badge ${levelCls(e.criticalLevel)}">Level ${esc(e.criticalLevel)}</span></div></div><div class="profile-grid">${pItem('Model',e.model)}${pItem('Serial',e.serial)}${pItem('Asset tag',e.assetTag)}${pItem('Nhà cung cấp',e.supplier)}${pItem('Ngày lắp đặt',fmt(e.installDate))}${pItem('Vị trí',e.location)}${pItem('Nguồn/Công suất',e.power)}${pItem('Người phụ trách',e.owner)}${pItem('Số lịch PM',pm.length)}${pItem('Số lần bảo trì',mt.length)}${pItem('Số sự kiện',ev.length)}${pItem('Tổng downtime',downtime+' phút')}${pItem('QR Code',e.qr)}${pItem('Hình ảnh',e.image)}</div><div class="note-box"><strong>Ghi chú lý lịch:</strong><p>${esc(e.note||'Không có ghi chú.')}</p></div>`;}
-function renderTables(){renderEvents();renderMaintenance();renderPm();}
-function renderEvents(){const rows=byEq(state.events).sort((a,b)=>dateNum(b.date)-dateNum(a.date));const body=id('eventLogBody');if(!body)return;body.innerHTML=rows.length?rows.map(x=>`<tr><td>${esc(fmt(x.date))}</td><td>${esc(x.type)}</td><td>${esc(x.title)}</td><td>${esc(x.cause)}</td><td>${esc(x.action)}</td><td>${esc(x.user)}</td><td>${x.downtimeMinutes} phút</td><td><span class="badge ${x.status==='Hoàn thành'||x.status==='Đã xử lý'?'success':'warning'}">${esc(x.status)}</span></td></tr>`).join(''):empty(8,'Chưa có lịch sử thiết bị.');}
-function renderMaintenance(){const rows=byEq(state.maintenance).sort((a,b)=>dateNum(b.date)-dateNum(a.date));const body=id('maintenanceBody');if(!body)return;body.innerHTML=rows.length?rows.map(x=>`<tr><td>${esc(fmt(x.date))}</td><td>${esc(x.item)}</td><td>${esc(x.content)}</td><td><span class="badge ${x.result==='Đạt'||x.result==='Hoàn thành'?'success':'warning'}">${esc(x.result)}</span></td><td>${esc(x.user)}</td><td>${esc(x.note)}</td></tr>`).join(''):empty(6,'Chưa có dữ liệu bảo trì.');}
-function renderPm(){const rows=byEq(state.pm).sort((a,b)=>dateNum(a.nextDate)-dateNum(b.nextDate));const body=id('pmPlanBody');if(!body)return;body.innerHTML=rows.length?rows.map(x=>{const s=pmStatus(x.nextDate);return`<tr><td>${esc(x.item)}</td><td>${esc(x.frequency)}</td><td>${esc(fmt(x.lastDate))}</td><td>${esc(fmt(x.nextDate))}</td><td><span class="badge ${s.cls}">${s.text}</span></td><td>${esc(x.owner)}</td><td>${esc(x.note)}</td></tr>`}).join(''):empty(7,'Chưa có lịch PM.');}
-function byEq(arr){return arr.filter(x=>x.equipmentId===state.selectedId)}
-function selected(){return state.equipment.find(e=>e.id===state.selectedId)||null}
-function pmStatus(d){const today=new Date();today.setHours(0,0,0,0);const nd=new Date(d);if(!d||Number.isNaN(nd))return{key:'none',text:'Chưa đặt lịch',cls:'neutral'};const diff=Math.ceil((nd-today)/86400000);if(diff<0)return{key:'over',text:'Quá hạn '+Math.abs(diff)+' ngày',cls:'danger'};if(diff<=7)return{key:'due',text:'Sắp đến hạn',cls:'warning'};return{key:'ok',text:'Còn hạn',cls:'success'};}
-function exportCurrentEquipmentCsv(){const e=selected();if(!e){toast('Chưa chọn thiết bị');return}const rows=[['Nhom','Ngay','Noi dung','Nguoi thuc hien','Trang thai'],['LY LICH','',`${e.id} - ${e.name} - ${e.model} - ${e.serial}`,e.owner,e.status],...byEq(state.events).map(x=>['SU KIEN',x.date,x.title,x.user,x.status]),...byEq(state.maintenance).map(x=>['BAO TRI',x.date,x.item+' - '+x.content,x.user,x.result]),...byEq(state.pm).map(x=>['LICH PM',x.nextDate,x.item,x.owner,pmStatus(x.nextDate).text])];const csv=rows.map(r=>r.map(v=>`"${String(v??'').replaceAll('"','""')}"`).join(',')).join('\n');const blob=new Blob(['\ufeff'+csv],{type:'text/csv;charset=utf-8'});const a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download=`${e.id}_history.csv`;a.click();URL.revokeObjectURL(a.href);}
-function pItem(l,v){return`<div class="profile-item"><span>${esc(l)}</span><strong>${esc(v||'-')}</strong></div>`}function empty(c,t){return`<tr><td colspan="${c}" class="empty">${esc(t)}</td></tr>`}function unique(a){return[...new Set(a.filter(Boolean))].sort()}function t(v){return v==null?'':String(v).trim()}function num(v){return Number(v||0)||0}function id(x){return document.getElementById(x)}function val(x){return id(x)?.value.trim()||''}function txt(x,v){const e=id(x);if(e)e.textContent=v}function esc(v){return String(v??'').replaceAll('&','&amp;').replaceAll('<','&lt;').replaceAll('>','&gt;').replaceAll('"','&quot;').replaceAll("'",'&#039;')}function fmt(v){if(!v)return'-';const d=new Date(v);return Number.isNaN(d)?v:d.toLocaleDateString('vi-VN')}function dateNum(v){const d=new Date(v);return Number.isNaN(d)?0:d.getTime()}function statusCls(s){return s==='Đang sử dụng'?'success':s==='Chờ sửa chữa'?'warning':s==='Ngừng sử dụng'?'danger':'neutral'}function levelCls(l){return l==='A'?'danger':l==='B'?'warning':l==='C'?'blue':'neutral'}function toast(m){const e=id('toast');if(!e){alert(m);return}e.textContent=m;e.classList.add('show');setTimeout(()=>e.classList.remove('show'),2500)}
+// ================================
+// NEMS Enterprise V3
+// ================================
+
+const EXCEL_FILE =
+  "data/Quản lý thiết bị.xlsx";
+
+let equipmentData = [];
+let eventData = [];
+
+const equipmentBody =
+  document.getElementById("equipmentTableBody");
+
+const eventBody =
+  document.getElementById("eventTableBody");
+
+const areaFilter =
+  document.getElementById("areaFilter");
+
+const statusFilter =
+  document.getElementById("statusFilter");
+
+const searchInput =
+  document.getElementById("searchInput");
+
+const totalEquipment =
+  document.getElementById("totalEquipment");
+
+const activeEquipment =
+  document.getElementById("activeEquipment");
+
+const repairEquipment =
+  document.getElementById("repairEquipment");
+
+const totalEvents =
+  document.getElementById("totalEvents");
+
+const equipmentCount =
+  document.getElementById("equipmentCount");
+
+const eventCount =
+  document.getElementById("eventCount");
+
+const refreshBtn =
+  document.getElementById("refreshBtn");

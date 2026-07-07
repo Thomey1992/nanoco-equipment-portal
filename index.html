@@ -6,6 +6,9 @@
   <title>NEMS Enterprise V3</title>
 
   <link rel="stylesheet" href="css/style.css" />
+
+  <!-- Thư viện đọc Excel -->
+  <script src="https://cdn.jsdelivr.net/npm/xlsx/dist/xlsx.full.min.js"></script>
 </head>
 
 <body>
@@ -18,65 +21,60 @@
       </div>
     </div>
 
-    <div class="top-actions">
-      <button id="refreshBtn" class="primary">Tải lại dữ liệu</button>
-    </div>
+    <button id="refreshBtn" class="primary-btn">
+      Tải lại dữ liệu
+    </button>
   </header>
 
-  <main class="layout">
-    <section class="panel">
-      <h2>Tổng quan thiết bị</h2>
+  <main class="container">
 
-      <div class="kpi-grid">
-        <div class="kpi-card">
-          <span>Tổng thiết bị</span>
-          <strong id="totalEquipment">0</strong>
-        </div>
+    <!-- DASHBOARD -->
+    <section class="dashboard">
+      <div class="card">
+        <span>Tổng thiết bị</span>
+        <strong id="totalEquipment">0</strong>
+      </div>
 
-        <div class="kpi-card">
-          <span>Đang hoạt động</span>
-          <strong id="activeEquipment">0</strong>
-        </div>
+      <div class="card">
+        <span>Đang hoạt động</span>
+        <strong id="activeEquipment">0</strong>
+      </div>
 
-        <div class="kpi-card">
-          <span>Chờ sửa chữa</span>
-          <strong id="repairEquipment">0</strong>
-        </div>
+      <div class="card">
+        <span>Chờ sửa chữa</span>
+        <strong id="repairEquipment">0</strong>
+      </div>
 
-        <div class="kpi-card">
-          <span>Sự kiện bảo trì</span>
-          <strong id="totalEvents">0</strong>
-        </div>
+      <div class="card">
+        <span>Sự kiện lịch sử</span>
+        <strong id="totalEvents">0</strong>
       </div>
     </section>
 
+    <!-- FILTER -->
     <section class="panel">
-      <h2>Bộ lọc</h2>
+      <h2>Bộ lọc thiết bị</h2>
 
-      <div class="filter-grid">
-        <div>
-          <label for="areaFilter">Khu vực</label>
-          <select id="areaFilter">
-            <option value="">Tất cả khu vực</option>
-          </select>
-        </div>
+      <div class="filter-row">
+        <select id="areaFilter">
+          <option value="">Tất cả khu vực</option>
+        </select>
 
-        <div>
-          <label for="statusFilter">Trạng thái</label>
-          <select id="statusFilter">
-            <option value="">Tất cả trạng thái</option>
-          </select>
-        </div>
+        <select id="statusFilter">
+          <option value="">Tất cả trạng thái</option>
+        </select>
 
-        <div>
-          <label for="searchInput">Tìm kiếm</label>
-          <input id="searchInput" type="text" placeholder="Nhập tên máy, mã máy, model, serial..." />
-        </div>
+        <input
+          id="searchInput"
+          type="text"
+          placeholder="Tìm ID, tên máy, model, serial..."
+        />
       </div>
     </section>
 
+    <!-- EQUIPMENT REGISTER -->
     <section class="panel">
-      <div class="section-title">
+      <div class="panel-title">
         <h2>Equipment_Register</h2>
         <span id="equipmentCount">0 dòng</span>
       </div>
@@ -91,9 +89,10 @@
               <th>Model</th>
               <th>Serial</th>
               <th>Trạng thái</th>
-              <th>Chi tiết</th>
+              <th>Xem</th>
             </tr>
           </thead>
+
           <tbody id="equipmentTableBody">
             <tr>
               <td colspan="7">Đang chờ tải dữ liệu...</td>
@@ -103,8 +102,9 @@
       </div>
     </section>
 
+    <!-- ASSET EVENT LOG -->
     <section class="panel">
-      <div class="section-title">
+      <div class="panel-title">
         <h2>Asset_Event_Log1</h2>
         <span id="eventCount">0 dòng</span>
       </div>
@@ -121,6 +121,7 @@
               <th>Người thực hiện</th>
             </tr>
           </thead>
+
           <tbody id="eventTableBody">
             <tr>
               <td colspan="6">Đang chờ tải dữ liệu...</td>
@@ -129,23 +130,32 @@
         </table>
       </div>
     </section>
+
   </main>
 
+  <!-- MODAL CHI TIẾT THIẾT BỊ -->
   <div id="detailModal" class="modal hidden">
     <div class="modal-content">
       <div class="modal-header">
         <h2 id="modalTitle">Chi tiết thiết bị</h2>
-        <button id="closeModalBtn" class="icon-btn">×</button>
+        <button id="closeModalBtn">×</button>
       </div>
 
-      <div id="modalBody" class="modal-body"></div>
+      <div id="modalBody"></div>
     </div>
   </div>
 
   <footer class="footer">
-    <p>NEMS Enterprise V3 - chỉ dùng sheet Equipment_Register và Asset_Event_Log1</p>
+    NEMS Enterprise V3 - Equipment_Register + Asset_Event_Log1
   </footer>
 
+  <!-- Module JS V3 -->
+  <script src="js/utils.js"></script>
+  <script src="js/excel.js"></script>
+  <script src="js/dashboard.js"></script>
+  <script src="js/equipment.js"></script>
+  <script src="js/history.js"></script>
+  <script src="js/modal.js"></script>
   <script src="js/app.js"></script>
 </body>
 </html>

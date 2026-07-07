@@ -43,3 +43,62 @@ const eventCount =
 
 const refreshBtn =
   document.getElementById("refreshBtn");
+
+window.addEventListener("DOMContentLoaded", () => {
+
+    loadExcel();
+
+});
+
+async function loadExcel(){
+
+    try{
+
+        const response = await fetch(EXCEL_FILE);
+
+        const arrayBuffer =
+            await response.arrayBuffer();
+
+        const workbook =
+            XLSX.read(arrayBuffer,{
+                type:"array"
+            });
+
+        equipmentData =
+            XLSX.utils.sheet_to_json(
+                workbook.Sheets["Equipment_Register"],
+                {
+                    defval:""
+                });
+
+        eventData =
+            XLSX.utils.sheet_to_json(
+                workbook.Sheets["Asset_Event_Log1"],
+                {
+                    defval:""
+                });
+
+        initFilter();
+
+        renderEquipment();
+
+        renderEvent();
+
+        updateDashboard();
+
+    }
+    catch(error){
+
+        console.error(error);
+
+        alert("Không đọc được file Excel.");
+
+    }
+
+}
+
+refreshBtn.addEventListener("click",()=>{
+
+    loadExcel();
+
+});

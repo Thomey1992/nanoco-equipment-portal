@@ -1,11 +1,11 @@
 const EQ = {
- id: ["Mã tài sản", "No.", "ID"],
-  position: ["Vị trí khu vực", "VỊ TRÍ LẮP ĐẶT\nPosition"],
-  name: ["Tên thiết bị", "TÊN\nName"],
-  model: ["Model", "MODEL"],
-  serial: ["Số Serial", "Serial"],
+  id: ["Mã tài sản", "No.", "ID"],
+  position: ["VỊ TRÍ LẮP ĐẶT\nPosition", "Vị trí khu vực"],
+  name: ["TÊN\nName", "Tên thiết bị"],
+  model: ["MODEL", "Model"],
+  serial: ["Serial", "Số Serial"],
   status: ["Loại trạng thái/sự kiện", "Trạng thái"],
-  assetName: ["Tên theo mã tài sản", "Tên Theo mã tài sản"],
+  assetName: ["Tên Theo mã tài sản", "Tên theo mã tài sản"],
   manufacturer: ["HÃNG SX\nManufacturer"],
   vendor: ["NHÀ CUNG CẤP\nVendor"],
   maintenance: ["CHU KỲ BẢO DƯỠNG\nMaintenance cycle"],
@@ -15,6 +15,22 @@ const EQ = {
 
 function eqValue(item, keys) {
   return safeText(getByKeys(item, keys));
+}
+
+function isRealEquipment(item) {
+  const name = eqValue(item, EQ.name);
+  const model = eqValue(item, EQ.model);
+  const id = eqValue(item, EQ.id);
+
+  if (!name && !model) return false;
+  if (id.includes("Khu vực")) return false;
+  if (id.includes("Area")) return false;
+
+  return true;
+}
+
+function getRealEquipmentData() {
+  return equipmentData.filter(isRealEquipment);
 }
 
 function initEquipment() {
@@ -33,7 +49,7 @@ function buildEquipmentFilter() {
   const areaSet = new Set();
   const statusSet = new Set();
 
-  equipmentData.forEach(item => {
+  getRealEquipmentData().forEach(item => {
     const a = eqValue(item, EQ.position);
     const s = eqValue(item, EQ.status);
 
@@ -60,7 +76,7 @@ function renderEquipment() {
   const tbody = document.getElementById("equipmentTableBody");
   clearElement(tbody);
 
-  let data = [...equipmentData];
+  let data = getRealEquipmentData();
 
   const area = document.getElementById("areaFilter").value;
   const status = document.getElementById("statusFilter").value;

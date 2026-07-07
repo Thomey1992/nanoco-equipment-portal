@@ -3,7 +3,7 @@
 // excel.js
 // ======================================
 
-const EXCEL_FILE = ".data/Quản lý thiết bị.xlsx";
+const EXCEL_FILE = ".data/equipment.xlsx";
 
 let equipmentData = [];
 let eventData = [];

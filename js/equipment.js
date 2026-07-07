@@ -1,5 +1,5 @@
 const EQ = {
-  id: ["Mã tài sản", "ID"],
+ id: ["Mã tài sản", "No.", "ID"],
   position: ["Vị trí khu vực", "VỊ TRÍ LẮP ĐẶT\nPosition"],
   name: ["Tên thiết bị", "TÊN\nName"],
   model: ["Model", "MODEL"],

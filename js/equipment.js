@@ -1,30 +1,41 @@
 const EQ = {
-  id: ["Mã tài sản", "No.", "ID"],
-  position: ["VỊ TRÍ LẮP ĐẶT\nPosition", "Vị trí khu vực"],
-  name: ["TÊN\nName", "Tên thiết bị"],
-  model: ["MODEL", "Model"],
-  serial: ["Serial", "Số Serial"],
-  status: ["Loại trạng thái/sự kiện", "Trạng thái"],
-  assetName: ["Tên Theo mã tài sản", "Tên theo mã tài sản"],
-  manufacturer: ["HÃNG SX\nManufacturer"],
-  vendor: ["NHÀ CUNG CẤP\nVendor"],
-  maintenance: ["CHU KỲ BẢO DƯỠNG\nMaintenance cycle"],
-  install: ["NGÀY LẮP ĐẶT\nInstallation date"],
-  note: ["GHI CHÚ\nNote"]
+  no: "No.",
+  category: "Phân loại",
+  asset: "Mã tài sản",
+  assetName: "Tên Theo mã tài sản",
+  name: "TÊN\nName",
+  model: "MODEL",
+  serial: "Serial",
+  parameter: "THÔNG SỐ KỸ THUẬT\nParameter",
+  quantity: "SỐ LƯỢNG\nQuantity",
+  manufacturer: "HÃNG SX\nManufacturer",
+  vendor: "NHÀ CUNG CẤP\nVendor",
+  year: "Năm sản xuất",
+  position: "VỊ TRÍ LẮP ĐẶT\nPosition",
+  maintenance: "CHU KỲ BẢO DƯỠNG\nMaintenance cycle",
+  install: "NGÀY LẮP ĐẶT\nInstallation date",
+  accreditation: "KIỂM ĐỊNH\nAccreditation",
+  calibration: "Hiệu chuẩn\nCalibration",
+  note: "GHI CHÚ\nNote",
+  spare: "Phụ tùng"
 };
 
-function eqValue(item, keys) {
-  return safeText(getByKeys(item, keys));
+function eqText(item, key) {
+  return safeText(item[key]);
+}
+
+function eqId(item) {
+  return eqText(item, EQ.asset) || eqText(item, EQ.no);
 }
 
 function isRealEquipment(item) {
-  const name = eqValue(item, EQ.name);
-  const model = eqValue(item, EQ.model);
-  const id = eqValue(item, EQ.id);
+  const name = eqText(item, EQ.name);
+  const model = eqText(item, EQ.model);
+  const no = eqText(item, EQ.no);
 
   if (!name && !model) return false;
-  if (id.includes("Khu vực")) return false;
-  if (id.includes("Area")) return false;
+  if (no.includes("Khu vực")) return false;
+  if (no.includes("Area")) return false;
 
   return true;
 }
@@ -47,22 +58,14 @@ function buildEquipmentFilter() {
   status.innerHTML = '<option value="">Tất cả trạng thái</option>';
 
   const areaSet = new Set();
-  const statusSet = new Set();
 
   getRealEquipmentData().forEach(item => {
-    const a = eqValue(item, EQ.position);
-    const s = eqValue(item, EQ.status);
-
-    if (a) areaSet.add(a);
-    if (s) statusSet.add(s);
+    const areaName = eqText(item, EQ.position);
+    if (areaName) areaSet.add(areaName);
   });
 
   [...areaSet].sort().forEach(x => {
     area.innerHTML += `<option value="${x}">${x}</option>`;
-  });
-
-  [...statusSet].sort().forEach(x => {
-    status.innerHTML += `<option value="${x}">${x}</option>`;
   });
 }
 
@@ -79,15 +82,10 @@ function renderEquipment() {
   let data = getRealEquipmentData();
 
   const area = document.getElementById("areaFilter").value;
-  const status = document.getElementById("statusFilter").value;
   const keyword = document.getElementById("searchInput").value;
 
   if (area) {
-    data = data.filter(item => eqValue(item, EQ.position) === area);
-  }
-
-  if (status) {
-    data = data.filter(item => eqValue(item, EQ.status) === status);
+    data = data.filter(item => eqText(item, EQ.position) === area);
   }
 
   if (keyword) {
@@ -102,16 +100,16 @@ function renderEquipment() {
   }
 
   data.forEach(item => {
-    const id = eqValue(item, EQ.id);
+    const id = eqId(item);
 
     tbody.innerHTML += `
       <tr>
         <td>${id}</td>
-        <td>${eqValue(item, EQ.position)}</td>
-        <td>${eqValue(item, EQ.name)}</td>
-        <td>${eqValue(item, EQ.model)}</td>
-        <td>${eqValue(item, EQ.serial)}</td>
-        <td>${eqValue(item, EQ.status)}</td>
+        <td>${eqText(item, EQ.position)}</td>
+        <td>${eqText(item, EQ.name)}</td>
+        <td>${eqText(item, EQ.model)}</td>
+        <td>${eqText(item, EQ.serial)}</td>
+        <td>${eqText(item, EQ.maintenance)}</td>
         <td>
           <button class="primary-btn" onclick="showEquipment('${id}')">
             Xem

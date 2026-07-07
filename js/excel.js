@@ -19,7 +19,10 @@ async function loadExcel() {
             type: "array"
         });
 
-        console.log("Sheet names:", workbook.SheetNames);
+        console.log("URL:", response.url);
+console.log("Content-Type:", response.headers.get("content-type"));
+console.log("Size:", arrayBuffer.byteLength);
+console.log("Sheet names:", workbook.SheetNames);
 
         const equipmentSheet = workbook.Sheets["Equipment_Register"];
         const eventSheet = workbook.Sheets["Asset_Event_Log1"];
